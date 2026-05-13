@@ -87,6 +87,18 @@ console.log(sig);
 # Then pass the output as the whop-signature header in your curl request
 ```
 
+## Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/health` | Returns server status and current timestamp |
+| `POST` | `/webhook` | Receives Whop webhook events |
+
+```bash
+curl https://whop-webhook-production.up.railway.app/health
+# {"status":"ok","timestamp":"2026-05-13T20:12:11.919Z"}
+```
+
 ## Example log output
 
 ```
