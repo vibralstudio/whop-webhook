@@ -82,7 +82,7 @@ async function sendTypeformEmail(customerEmail, product) {
   await sgMail.send({
     to: customerEmail,
     from: "vibralstudio@gmail.com",
-    subject: "One quick thing before you get started",
+    subject: "Your Custom Growth Blueprint — here's what to do next",
     text: [
       "Thanks for purchasing your Custom Growth Blueprint.",
       "",
