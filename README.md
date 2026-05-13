@@ -1,6 +1,6 @@
 # Whop Webhook Server
 
-Simple Node.js server that receives Whop payment events and logs the customer email and product purchased for every `invoice_paid` event.
+Node.js server that receives Whop payment events. On every `invoice_paid` event it logs the customer details and automatically emails them a Typeform link via SendGrid.
 
 ## What it does
 
@@ -8,6 +8,7 @@ Simple Node.js server that receives Whop payment events and logs the customer em
 - Verifies the `whop-signature` header using HMAC-SHA256
 - Filters for `invoice_paid` events, silently ignores everything else
 - Logs customer email, product name, amount, and event ID to the console
+- Emails the customer a Typeform onboarding link via SendGrid
 
 ## Setup
 
@@ -27,6 +28,9 @@ Edit `.env` and fill in:
 |----------|----------------|
 | `PORT` | Port to run the server on (default: `3000`) |
 | `WHOP_WEBHOOK_SECRET` | Whop dashboard → Your app → Webhooks → Signing secret |
+| `SENDGRID_API_KEY` | [app.sendgrid.com](https://app.sendgrid.com) → Settings → API Keys |
+
+> The `from` address in `server.js` must be verified in SendGrid under Settings → Sender Authentication before emails will send.
 
 **3. Run the server**
 ```bash
@@ -37,15 +41,39 @@ npm start
 npm run dev
 ```
 
-## Exposing the server to Whop
+## Deployment
 
-Whop needs a public URL to send webhook events to. During development, use [ngrok](https://ngrok.com):
+The server is deployed on Railway at:
+```
+https://whop-webhook-production.up.railway.app/webhook
+```
+
+Add this URL in your Whop dashboard under **App Settings → Webhooks** and subscribe to the `invoice_paid` event. Set `WHOP_WEBHOOK_SECRET` and `SENDGRID_API_KEY` in Railway's environment variables.
+
+## Local testing
+
+Whop needs a public URL to reach your server. During development, use [ngrok](https://ngrok.com):
 
 ```bash
 npx ngrok http 3000
 ```
 
-Copy the generated `https://` URL and add it in your Whop dashboard under **App Settings → Webhooks**, then subscribe to the `invoice_paid` event.
+To test without signature verification (no `WHOP_WEBHOOK_SECRET` set):
+
+```bash
+curl -X POST http://localhost:3000/webhook \
+  -H "Content-Type: application/json" \
+  -d '{
+    "action": "invoice_paid",
+    "data": {
+      "id": "inv_test",
+      "user": { "email": "customer@example.com" },
+      "plan": { "name": "VGB Premium" },
+      "total": 4999,
+      "currency": "usd"
+    }
+  }'
+```
 
 ## Example log output
 
@@ -56,9 +84,10 @@ Copy the generated `https://` URL and add it in your Whop dashboard under **App 
   Amount   : 49.99 USD
   Event ID : inv_abc123
   Time     : 2026-05-13T15:00:00.000Z
+  Email sent → customer@example.com
 --------------------
 ```
 
 ## Webhook verification
 
-Requests are verified using the `whop-signature` header. Set `WHOP_WEBHOOK_SECRET` in your `.env` to enable it. If the secret is not set, verification is skipped (useful for local testing).
+Requests are verified using the `whop-signature` header via HMAC-SHA256. Set `WHOP_WEBHOOK_SECRET` in your `.env` to enable it. If the secret is not set, verification is skipped (useful for local testing).
