@@ -22,6 +22,10 @@ function verifySignature(rawBody, signatureHeader) {
   return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(signatureHeader));
 }
 
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
+});
+
 app.post("/webhook", (req, res) => {
   const signature = req.headers["whop-signature"];
 
