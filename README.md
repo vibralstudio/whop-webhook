@@ -58,7 +58,7 @@ Whop needs a public URL to reach your server. During development, use [ngrok](ht
 npx ngrok http 3000
 ```
 
-To test without signature verification (no `WHOP_WEBHOOK_SECRET` set):
+**Without signature verification** (omit `WHOP_WEBHOOK_SECRET` from `.env`):
 
 ```bash
 curl -X POST http://localhost:3000/webhook \
@@ -73,6 +73,18 @@ curl -X POST http://localhost:3000/webhook \
       "currency": "usd"
     }
   }'
+```
+
+**With signature verification** (generate a valid `whop-signature`):
+
+```bash
+node -e "
+const crypto = require('crypto');
+const body = '{\"action\":\"invoice_paid\",\"data\":{\"id\":\"inv_test\",\"user\":{\"email\":\"customer@example.com\"},\"plan\":{\"name\":\"VGB Premium\"},\"total\":4999,\"currency\":\"usd\"}}';
+const sig = crypto.createHmac('sha256', process.env.WHOP_WEBHOOK_SECRET).update(body).digest('hex');
+console.log(sig);
+"
+# Then pass the output as the whop-signature header in your curl request
 ```
 
 ## Example log output
