@@ -84,19 +84,19 @@ async function sendTypeformEmail(customerEmail, product) {
     from: "vibralstudio@gmail.com",
     subject: "One quick thing before you get started",
     text: [
-      `Thanks for purchasing ${product}!`,
+      "Thanks for purchasing your Custom Growth Blueprint.",
       "",
-      "Before you dive in, we'd love to learn a bit more about you so we can make your experience as good as possible.",
+      "Please fill out the form below and take your time answering each question. These answers will teach you a lot about yourself and will help us build your personalized growth system.",
       "",
-      `Fill out this quick form (takes 2 minutes): ${TYPEFORM_URL}`,
+      TYPEFORM_URL,
       "",
       "Talk soon,",
       "Vibral Studio",
     ].join("\n"),
     html: `
-      <p>Thanks for purchasing <strong>${product}</strong>!</p>
-      <p>Before you dive in, we'd love to learn a bit more about you so we can make your experience as good as possible.</p>
-      <p><a href="${TYPEFORM_URL}" style="display:inline-block;padding:12px 24px;background:#000;color:#fff;text-decoration:none;border-radius:6px;font-weight:bold;">Fill out the quick form</a></p>
+      <p>Thanks for purchasing your Custom Growth Blueprint.</p>
+      <p>Please fill out the form below and take your time answering each question. These answers will teach you a lot about yourself and will help us build your personalized growth system.</p>
+      <p><a href="${TYPEFORM_URL}" style="display:inline-block;padding:12px 24px;background:#000;color:#fff;text-decoration:none;border-radius:6px;font-weight:bold;">Fill out the form</a></p>
       <p style="color:#666;font-size:13px;">Or copy this link: ${TYPEFORM_URL}</p>
       <p>Talk soon,<br>Vibral Studio</p>
     `,
