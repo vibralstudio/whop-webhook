@@ -1,14 +1,28 @@
 # Whop Webhook Server
 
-Node.js server that receives Whop payment events. On every `invoice_paid` event it logs the customer details and automatically emails them a Typeform link via SendGrid.
+Node.js/Express server that powers the Vibral Studio Custom Growth Blueprint pipeline. Handles Whop payment events, sends customers a Typeform onboarding link, then processes Typeform submissions end-to-end: Claude generates a personalized blueprint, pdfkit renders it as a branded PDF, and SendGrid delivers it to the customer.
 
-## What it does
+## How it works
 
-- Listens for incoming Whop webhook events on `POST /webhook`
-- Verifies the `whop-signature` header using HMAC-SHA256
-- Filters for `invoice_paid` events, silently ignores everything else
-- Logs customer email, product name, amount, and event ID to the console
-- Emails the customer a Typeform onboarding link via SendGrid
+```
+Whop invoice_paid  →  /webhook  →  sends Typeform link to customer
+                                              ↓
+                              customer fills out 45-question form
+                                              ↓
+Typeform submit  →  /typeform-webhook  →  Claude generates blueprint
+                                              ↓
+                                        pdfkit renders PDF
+                                              ↓
+                                        SendGrid sends PDF to customer
+```
+
+## Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/health` | Returns server status and current timestamp |
+| `POST` | `/webhook` | Receives Whop `invoice_paid` events, emails customer a Typeform link |
+| `POST` | `/typeform-webhook` | Receives Typeform submissions, generates and delivers blueprint PDF |
 
 ## Setup
 
@@ -29,8 +43,9 @@ Edit `.env` and fill in:
 | `PORT` | Port to run the server on (default: `3000`) |
 | `WHOP_WEBHOOK_SECRET` | Whop dashboard → Your app → Webhooks → Signing secret |
 | `SENDGRID_API_KEY` | [app.sendgrid.com](https://app.sendgrid.com) → Settings → API Keys |
+| `ANTHROPIC_API_KEY` | [console.anthropic.com](https://console.anthropic.com) → API Keys |
 
-> The `from` address in `server.js` must be verified in SendGrid under Settings → Sender Authentication before emails will send.
+> The `from` address (`vibralstudio@gmail.com`) must be verified in SendGrid under Settings → Sender Authentication before emails will send.
 
 **3. Run the server**
 ```bash
@@ -45,20 +60,40 @@ npm run dev
 
 The server is deployed on Railway at:
 ```
-https://whop-webhook-production.up.railway.app/webhook
+https://whop-webhook-production.up.railway.app
 ```
 
-Add this URL in your Whop dashboard under **App Settings → Webhooks** and subscribe to the `invoice_paid` event. Set `WHOP_WEBHOOK_SECRET` and `SENDGRID_API_KEY` in Railway's environment variables.
+Set `WHOP_WEBHOOK_SECRET`, `SENDGRID_API_KEY`, and `ANTHROPIC_API_KEY` in Railway's environment variables.
+
+**Whop**: Add `https://whop-webhook-production.up.railway.app/webhook` in your Whop dashboard under **App Settings → Webhooks** and subscribe to the `invoice_paid` event.
+
+**Typeform**: Add `https://whop-webhook-production.up.railway.app/typeform-webhook` as a webhook in your Typeform form settings. Also add `email` as a hidden field in the form — the Whop webhook pre-fills it via URL parameter so it flows through to the Typeform submission.
+
+## Project structure
+
+```
+server.js                    # Express app, webhook handlers
+lib/
+  generate-blueprint.js      # Calls Claude to write the personalized blueprint
+  generate-pdf.js            # Renders blueprint markdown → branded PDF via pdfkit
+  send-blueprint-email.js    # Sends the PDF attachment via SendGrid
+assets/
+  vgb-base.txt               # VGB framework document (source material for Claude)
+  Syne-Bold.ttf              # Custom font — headers and labels
+  Syne-Regular.ttf           # Custom font — body text
+```
 
 ## Local testing
 
-Whop needs a public URL to reach your server. During development, use [ngrok](https://ngrok.com):
-
+**Health check**
 ```bash
-npx ngrok http 3000
+curl http://localhost:3000/health
+# {"status":"ok","timestamp":"2026-05-13T20:12:11.919Z"}
 ```
 
-**Without signature verification** (omit `WHOP_WEBHOOK_SECRET` from `.env`):
+**Whop webhook (without signature verification)**
+
+Omit `WHOP_WEBHOOK_SECRET` from `.env`, then:
 
 ```bash
 curl -X POST http://localhost:3000/webhook \
@@ -75,7 +110,7 @@ curl -X POST http://localhost:3000/webhook \
   }'
 ```
 
-**With signature verification** (generate a valid `whop-signature`):
+**Whop webhook (with signature verification)**
 
 ```bash
 node -e "
@@ -84,19 +119,28 @@ const body = '{\"action\":\"invoice_paid\",\"data\":{\"id\":\"inv_test\",\"user\
 const sig = crypto.createHmac('sha256', process.env.WHOP_WEBHOOK_SECRET).update(body).digest('hex');
 console.log(sig);
 "
-# Then pass the output as the whop-signature header in your curl request
 ```
 
-## Endpoints
+Pass the output as the `whop-signature` header in your curl request.
 
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/health` | Returns server status and current timestamp |
-| `POST` | `/webhook` | Receives Whop webhook events |
+**Typeform webhook**
 
 ```bash
-curl https://whop-webhook-production.up.railway.app/health
-# {"status":"ok","timestamp":"2026-05-13T20:12:11.919Z"}
+curl -X POST http://localhost:3000/typeform-webhook \
+  -H "Content-Type: application/json" \
+  -d '{
+    "form_response": {
+      "hidden": { "email": "customer@example.com" },
+      "definition": {
+        "fields": [
+          { "id": "q1", "title": "What is your artist name?" }
+        ]
+      },
+      "answers": [
+        { "field": { "id": "q1" }, "type": "text", "text": "DJ Example" }
+      ]
+    }
+  }'
 ```
 
 ## Example log output
@@ -108,10 +152,19 @@ curl https://whop-webhook-production.up.railway.app/health
   Amount   : 49.99 USD
   Event ID : inv_abc123
   Time     : 2026-05-13T15:00:00.000Z
-  Email sent → customer@example.com
+  Typeform email sent → customer@example.com
 --------------------
+
+--- typeform_response ---
+  Email   : customer@example.com
+  Answers : 45
+-------------------------
+  Generating blueprint with Claude...
+  Generating PDF...
+  Sending blueprint email → customer@example.com
+  Blueprint delivered to customer@example.com
 ```
 
 ## Webhook verification
 
-Requests are verified using the `whop-signature` header via HMAC-SHA256. Set `WHOP_WEBHOOK_SECRET` in your `.env` to enable it. If the secret is not set, verification is skipped (useful for local testing).
+Whop requests are verified using the `whop-signature` header via HMAC-SHA256. Set `WHOP_WEBHOOK_SECRET` in your `.env` to enable it. If the secret is not set, verification is skipped (useful for local testing).
