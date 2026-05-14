@@ -45,7 +45,7 @@ Edit `.env` and fill in:
 | `SENDGRID_API_KEY` | [app.sendgrid.com](https://app.sendgrid.com) → Settings → API Keys |
 | `ANTHROPIC_API_KEY` | [console.anthropic.com](https://console.anthropic.com) → API Keys |
 
-> The `from` address (`vibralstudio@gmail.com`) must be verified in SendGrid under Settings → Sender Authentication before emails will send.
+> The `from` address (`contact@vibralstudio.com`) must be verified in SendGrid under Settings → Sender Authentication before emails will send.
 
 **3. Run the server**
 ```bash
