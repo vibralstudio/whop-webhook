@@ -1,6 +1,7 @@
 const express = require("express");
 const crypto = require("crypto");
 const sgMail = require("@sendgrid/mail");
+const { fetchTypeformResponse } = require("./lib/fetch-typeform-response");
 const { generateBlueprint } = require("./lib/generate-blueprint");
 const { generatePDF } = require("./lib/generate-pdf");
 const { sendBlueprintEmail } = require("./lib/send-blueprint-email");
@@ -119,51 +120,27 @@ app.post("/typeform-webhook", async (req, res) => {
   // Respond immediately so Typeform doesn't retry
   res.status(200).json({ received: true });
 
-  const formResponse = req.body?.form_response;
-  if (!formResponse) {
-    console.warn("Typeform webhook: no form_response in payload");
+  const responseToken = req.body?.form_response?.token;
+  if (!responseToken) {
+    console.warn("Typeform webhook: no form_response.token in payload");
     return;
   }
-
-  // Extract email from hidden field (pre-filled via URL param)
-  const email = formResponse.hidden?.email;
-  if (!email) {
-    console.warn("Typeform webhook: no email in hidden fields");
-    return;
-  }
-
-  // Extract answers paired with question titles
-  const fields = formResponse.definition?.fields ?? [];
-  const rawAnswers = formResponse.answers ?? [];
-
-  const answers = rawAnswers.map((a) => {
-    const field = fields.find((f) => f.id === a.field.id);
-    const question = field?.title ?? a.field.id;
-
-    let answer = "(no answer)";
-    switch (a.type) {
-      case "text":         answer = a.text; break;
-      case "choice":       answer = a.choice?.label ?? a.choice?.other ?? "(no choice)"; break;
-      case "choices":      answer = (a.choices?.labels ?? []).join(", "); break;
-      case "number":       answer = String(a.number); break;
-      case "boolean":      answer = a.boolean ? "Yes" : "No"; break;
-      case "email":        answer = a.email; break;
-      case "long_text":    answer = a.text; break;
-      case "short_text":   answer = a.text; break;
-      case "rating":       answer = String(a.number); break;
-      case "opinion_scale": answer = String(a.number); break;
-      default:             answer = JSON.stringify(a[a.type] ?? "(unknown)");
-    }
-
-    return { question, answer };
-  });
-
-  console.log(`--- typeform_response ---`);
-  console.log(`  Email   : ${email}`);
-  console.log(`  Answers : ${answers.length}`);
-  console.log(`-------------------------`);
 
   try {
+    console.log(`  Fetching response ${responseToken} from Typeform API...`);
+    const { email, answers } = await fetchTypeformResponse(responseToken);
+
+    if (!email) {
+      console.warn("Typeform webhook: could not determine email from response");
+      return;
+    }
+
+    console.log(`--- typeform_response ---`);
+    console.log(`  Token   : ${responseToken}`);
+    console.log(`  Email   : ${email}`);
+    console.log(`  Answers : ${answers.length}`);
+    console.log(`-------------------------`);
+
     console.log(`  Generating blueprint with Claude...`);
     const blueprintText = await generateBlueprint(answers);
 

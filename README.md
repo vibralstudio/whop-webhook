@@ -42,6 +42,7 @@ Edit `.env` and fill in:
 |----------|----------------|
 | `PORT` | Port to run the server on (default: `3000`) |
 | `WHOP_WEBHOOK_SECRET` | Whop dashboard → Your app → Webhooks → Signing secret |
+| `TYPEFORM_API_TOKEN` | [admin.typeform.com](https://admin.typeform.com) → Account → Personal tokens |
 | `SENDGRID_API_KEY` | [app.sendgrid.com](https://app.sendgrid.com) → Settings → API Keys |
 | `ANTHROPIC_API_KEY` | [console.anthropic.com](https://console.anthropic.com) → API Keys |
 
@@ -125,22 +126,12 @@ Pass the output as the `whop-signature` header in your curl request.
 
 **Typeform webhook**
 
+The server now fetches answers from the Typeform API using the `form_response.token` from the webhook payload. Pass a real response token (find one in your Typeform Results tab):
+
 ```bash
 curl -X POST http://localhost:3000/typeform-webhook \
   -H "Content-Type: application/json" \
-  -d '{
-    "form_response": {
-      "hidden": { "email": "customer@example.com" },
-      "definition": {
-        "fields": [
-          { "id": "q1", "title": "What is your artist name?" }
-        ]
-      },
-      "answers": [
-        { "field": { "id": "q1" }, "type": "text", "text": "DJ Example" }
-      ]
-    }
-  }'
+  -d '{"form_response": {"token": "YOUR_RESPONSE_TOKEN_HERE"}}'
 ```
 
 ## Example log output
@@ -156,6 +147,7 @@ curl -X POST http://localhost:3000/typeform-webhook \
 --------------------
 
 --- typeform_response ---
+  Token   : a3a12ec67a1365927098a606107fac15
   Email   : customer@example.com
   Answers : 45
 -------------------------
