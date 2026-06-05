@@ -64,7 +64,17 @@ The server is deployed on Railway at:
 https://whop-webhook-production.up.railway.app
 ```
 
-Set `WHOP_WEBHOOK_SECRET`, `SENDGRID_API_KEY`, and `ANTHROPIC_API_KEY` in Railway's environment variables.
+Set **all five** environment variables in Railway's dashboard (Variables tab):
+
+| Variable | Required |
+|----------|----------|
+| `WHOP_WEBHOOK_SECRET` | Yes |
+| `TYPEFORM_API_TOKEN` | Yes — get from admin.typeform.com → Account → Personal tokens |
+| `SENDGRID_API_KEY` | Yes |
+| `ANTHROPIC_API_KEY` | Yes |
+| `PORT` | No (Railway sets this automatically) |
+
+> `TYPEFORM_API_TOKEN` is required since the server fetches Typeform answers via API. Without it the server will refuse to start.
 
 **Whop**: Add `https://whop-webhook-production.up.railway.app/webhook` in your Whop dashboard under **App Settings → Webhooks** and subscribe to the `invoice_paid` event.
 
