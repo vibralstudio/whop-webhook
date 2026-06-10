@@ -6,6 +6,7 @@ const logger = require('./lib/logger');
 const { withRetry } = require('./lib/retry');
 const { fetchTypeformResponse } = require('./lib/fetch-typeform-response');
 const { generateBlueprint } = require('./lib/generate-blueprint');
+const { renderTemplate } = require('./lib/render-template');
 const { generatePDF } = require('./lib/generate-pdf');
 const { sendBlueprintEmail } = require('./lib/send-blueprint-email');
 
@@ -159,10 +160,13 @@ async function runBlueprintPipeline(responseToken) {
     }
 
     logger.info('Generating blueprint', { token: responseToken, email, answers: answers.length });
-    const blueprintText = await generateBlueprint(answers);
+    const blueprintJson = await generateBlueprint(answers);
+
+    logger.info('Rendering template', { token: responseToken });
+    const blueprintHtml = renderTemplate(blueprintJson);
 
     logger.info('Generating PDF', { token: responseToken });
-    const pdfBuffer = await generatePDF(blueprintText);
+    const pdfBuffer = await generatePDF(blueprintHtml);
 
     logger.info('Sending email', { token: responseToken, email });
     await sendBlueprintEmail(email, pdfBuffer);

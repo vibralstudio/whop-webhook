@@ -8,11 +8,8 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.96.0",
-    "@fontsource/syne": "^5.2.7",
     "@sendgrid/mail": "^8.1.6",
     "express": "^4.19.2",
-    "pdfkit": "^0.18.0",
-    "wawoff2": "^2.0.1",
-    "woff-tools": "^0.1.0"
+    "puppeteer": "^22.0.0"
   }
 }
