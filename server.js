@@ -9,7 +9,8 @@ const { generateBlueprint }      = require('./lib/generate-blueprint');
 const { renderTemplate }         = require('./lib/render-template');
 const { generatePDF }            = require('./lib/generate-pdf');
 const { sendBlueprintEmail }     = require('./lib/send-blueprint-email');
-
+const fs = require('fs');
+const path = require('path');
 const { addSubscriber, getSubscriberByToken, getAllSubscribers, getActiveCount } = require('./lib/vgb-store');
 const { getPublished, getDraft, saveDraft, publishDraft, publishDirect }        = require('./lib/vgb-content-store');
 const { sendVGBAccessEmail, sendApprovalEmail }                                 = require('./lib/vgb-email');
@@ -53,7 +54,13 @@ function adminAuth(req, res, next) {
   }
   next();
 }
-
+app.get('/free-blueprint', (_req, res) => {
+  const filePath = path.join(__dirname, 'public', 'free-blueprint.html');
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).send('Blueprint not found.');
+  }
+  res.sendFile(filePath);
+});
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString(), vgbSubscribers: getActiveCount() });
 });
