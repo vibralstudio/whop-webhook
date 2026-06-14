@@ -55,11 +55,8 @@ function adminAuth(req, res, next) {
   next();
 }
 app.get('/free-blueprint', (_req, res) => {
-  const filePath = path.join(__dirname, 'public', 'free-blueprint.html');
-  if (!fs.existsSync(filePath)) {
-    return res.status(404).send('Blueprint not found.');
-  }
-  res.sendFile(filePath);
+  res.sendFile(path.join(__dirname, 'public', 'free-blueprint.html'));
+});
 });
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString(), vgbSubscribers: getActiveCount() });
