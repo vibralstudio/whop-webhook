@@ -1,135 +1,261 @@
-/**
- * render-admin.js
- * Renders the admin dashboard HTML.
- */
+const express  = require('express');
+const crypto   = require('crypto');
+const sgMail   = require('@sendgrid/mail');
+const config   = require('./lib/config');
+const logger   = require('./lib/logger');
+const { withRetry }              = require('./lib/retry');
+const { fetchTypeformResponse }  = require('./lib/fetch-typeform-response');
+const { generateBlueprint }      = require('./lib/generate-blueprint');
+const { renderTemplate }         = require('./lib/render-template');
+const { generatePDF }            = require('./lib/generate-pdf');
+const { sendBlueprintEmail }     = require('./lib/send-blueprint-email');
 
-function renderAdminDashboard(subscribers, published, draft) {
-  const activeCount = subscribers.filter(s => s.active).length;
+const { addSubscriber, getSubscriberByToken, getAllSubscribers, getActiveCount } = require('./lib/vgb-store');
+const { getPublished, getDraft, saveDraft, publishDraft, publishDirect }        = require('./lib/vgb-content-store');
+const { sendVGBAccessEmail, sendApprovalEmail }                                 = require('./lib/vgb-email');
+const { renderVGBPage }                                                          = require('./lib/render-vgb');
+const { renderAdminDashboard }                                                   = require('./lib/render-admin');
 
-  const subscriberRows = subscribers
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    .map(s => `
-      <tr>
-        <td>${escHtml(s.email)}</td>
-        <td>${new Date(s.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</td>
-        <td><span class="badge ${s.active ? 'badge-active' : 'badge-inactive'}">${s.active ? 'Active' : 'Cancelled'}</span></td>
-        <td><a href="/vgb/${s.token}" target="_blank" class="link">View →</a></td>
-      </tr>
-    `).join('');
+config.validateConfig();
 
-  const draftBanner = draft ? `
-    <div class="draft-banner">
-      <div>
-        <strong>Draft ready:</strong> ${escHtml(draft.weekLabel)}
-        <span style="color:var(--text-muted);font-size:12px;margin-left:12px;">Created ${new Date(draft.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span>
-      </div>
-      <form method="POST" action="/admin/publish" style="display:inline;">
-        <button type="submit" class="btn btn-gold">Publish to All Subscribers →</button>
-      </form>
-    </div>
-  ` : '';
+const app = express();
 
-  const sectionsJson = JSON.stringify(published.sections ?? [], null, 2);
+const ADMIN_PASSWORD  = process.env.ADMIN_PASSWORD  || 'vibral2026';
+const ADMIN_EMAIL     = process.env.ADMIN_EMAIL     || 'contact@vibralstudio.com';
+const VGB_PRODUCT     = process.env.VGB_PRODUCT_NAME || 'The Viral Growth Blueprint';
+const BASE_URL        = process.env.BASE_URL         || 'https://whop-webhook-production.up.railway.app';
 
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VGB Admin — Vibral Studio</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
-  :root{--black:#0A0A08;--black2:#111110;--gold:#C8A96E;--gold-dim:#9A7D4A;--white:#F0EDE6;--grey:#2A2A28;--text-muted:#888880;}
-  *{margin:0;padding:0;box-sizing:border-box;}
-  body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.7;-webkit-font-smoothing:antialiased;}
-  .header{padding:24px 48px;border-bottom:1px solid var(--grey);display:flex;align-items:center;justify-content:space-between;}
-  .header-brand{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.2em;color:var(--gold);text-transform:uppercase;}
-  .main{padding:48px;}
-  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-bottom:40px;}
-  .stat{background:var(--black2);border:1px solid var(--grey);padding:28px 24px;}
-  .stat-num{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:var(--gold);line-height:1;}
-  .stat-label{font-size:12px;color:var(--text-muted);margin-top:6px;text-transform:uppercase;letter-spacing:0.1em;}
-  .section-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--white);margin-bottom:20px;}
-  .draft-banner{background:var(--black2);border:1px solid var(--gold);padding:20px 24px;display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;gap:16px;}
-  table{width:100%;border-collapse:collapse;margin-bottom:48px;}
-  th{font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.15em;color:var(--gold);text-transform:uppercase;text-align:left;padding:0 16px 16px 0;border-bottom:1px solid var(--gold-dim);}
-  td{padding:16px 16px 16px 0;border-bottom:1px solid var(--grey);font-size:13px;color:var(--text-muted);vertical-align:middle;}
-  .badge{padding:4px 10px;font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;font-family:'Syne',sans-serif;}
-  .badge-active{background:#1a2e1a;color:#4ade80;border:1px solid #4ade80;}
-  .badge-inactive{background:#2e1a1a;color:#f87171;border:1px solid #f87171;}
-  .link{color:var(--gold);text-decoration:none;font-size:12px;}
-  .editor-area{background:var(--black2);border:1px solid var(--grey);padding:24px;margin-bottom:16px;}
-  .editor-area label{font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.15em;color:var(--gold);text-transform:uppercase;display:block;margin-bottom:12px;}
-  textarea{width:100%;background:#0a0a08;border:1px solid var(--grey);color:var(--white);padding:16px;font-family:'DM Sans',sans-serif;font-size:13px;line-height:1.6;resize:vertical;min-height:320px;}
-  input[type=text]{width:100%;background:#0a0a08;border:1px solid var(--grey);color:var(--white);padding:12px 16px;font-family:'DM Sans',sans-serif;font-size:13px;margin-bottom:16px;}
-  .btn{display:inline-block;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:14px 24px;cursor:pointer;border:none;}
-  .btn-gold{background:var(--gold);color:var(--black);}
-  .btn-outline{background:transparent;color:var(--gold);border:1px solid var(--gold);}
-  .help{font-size:12px;color:var(--text-muted);margin-bottom:16px;line-height:1.6;}
-  .success-msg{background:#1a2e1a;border:1px solid #4ade80;color:#4ade80;padding:12px 20px;margin-bottom:24px;font-size:13px;}
-</style>
-</head>
-<body>
+app.use('/webhook', express.raw({ type: 'application/json' }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-<div class="header">
-  <span class="header-brand">Vibral Studio — VGB Admin</span>
-  <span style="font-size:12px;color:var(--text-muted);">${new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})}</span>
-</div>
-
-<div class="main">
-
-  <div class="stats">
-    <div class="stat">
-      <div class="stat-num">${activeCount}</div>
-      <div class="stat-label">Active subscribers</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num">${subscribers.length}</div>
-      <div class="stat-label">Total all time</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num">$${activeCount * 97}</div>
-      <div class="stat-label">Monthly recurring</div>
-    </div>
-  </div>
-
-  ${draftBanner}
-
-  <div class="section-title">Subscribers</div>
-  <table>
-    <thead><tr><th>Email</th><th>Joined</th><th>Status</th><th>Link</th></tr></thead>
-    <tbody>${subscriberRows || '<tr><td colspan="4" style="color:var(--text-muted);">No subscribers yet.</td></tr>'}</tbody>
-  </table>
-
-  <div class="section-title" style="margin-bottom:8px;">Edit VGB Content</div>
-  <p class="help">
-    Edit the sections below in JSON format. Each section has: <code>num</code>, <code>title</code>, <code>lead</code>, <code>cards</code> (array of {label, title, body}), <code>insight</code>, and optionally <code>weeklyUpdate</code> (highlighted "This week" box).<br>
-    Click <strong>Save & Publish</strong> to push changes live to all subscribers instantly.
-  </p>
-
-  <form method="POST" action="/admin/save">
-    <div class="editor-area">
-      <label>Week Label</label>
-      <input type="text" name="weekLabel" value="${escHtml(published.weekLabel ?? '')}" placeholder="e.g. Week of June 16, 2026">
-    </div>
-    <div class="editor-area">
-      <label>Sections (JSON)</label>
-      <textarea name="sectionsJson">${escHtml(sectionsJson)}</textarea>
-    </div>
-    <button type="submit" class="btn btn-gold">Save & Publish to All Subscribers →</button>
-  </form>
-
-</div>
-</body>
-</html>`;
+function verifyWhopSignature(rawBody, signatureHeader) {
+  if (!config.whopWebhookSecret) return true;
+  const expected = crypto
+    .createHmac('sha256', config.whopWebhookSecret)
+    .update(rawBody)
+    .digest('hex');
+  const a = Buffer.from(expected);
+  const b = Buffer.from(signatureHeader ?? '');
+  return a.length === b.length && crypto.timingSafeEqual(a, b);
 }
 
-function escHtml(str) {
-  return String(str)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;');
+function adminAuth(req, res, next) {
+  const auth = req.headers['authorization'];
+  if (!auth || !auth.startsWith('Basic ')) {
+    res.setHeader('WWW-Authenticate', 'Basic realm="VGB Admin"');
+    return res.status(401).send('Authentication required.');
+  }
+  const [user, pass] = Buffer.from(auth.slice(6), 'base64').toString().split(':');
+  if (pass !== ADMIN_PASSWORD) {
+    res.setHeader('WWW-Authenticate', 'Basic realm="VGB Admin"');
+    return res.status(401).send('Wrong password.');
+  }
+  next();
 }
 
-module.exports = { renderAdminDashboard };
+app.get('/health', (_req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString(), vgbSubscribers: getActiveCount() });
+});
+
+app.post('/webhook', (req, res) => {
+  const signature = req.headers['whop-signature'];
+
+  if (config.whopWebhookSecret && !signature) {
+    logger.warn('Missing whop-signature header');
+    return res.status(401).json({ error: 'Missing signature' });
+  }
+
+  if (!verifyWhopSignature(req.body, signature)) {
+    logger.warn('Invalid Whop webhook signature');
+    return res.status(401).json({ error: 'Invalid signature' });
+  }
+
+  let payload;
+  try { payload = JSON.parse(req.body); }
+  catch { return res.status(400).json({ error: 'Invalid JSON' }); }
+
+  const { action, data } = payload;
+
+  if (action !== 'invoice_paid') {
+    return res.status(200).json({ received: true, skipped: action });
+  }
+
+  const email    = data?.user?.email ?? data?.customer?.email ?? null;
+  const product  = data?.plan?.name  ?? data?.product?.name  ?? data?.membership?.plan?.name ?? '(unknown product)';
+  const amount   = data?.total ?? data?.amount;
+  const currency = (data?.currency ?? 'usd').toUpperCase();
+
+  logger.info('invoice_paid', { email, product, amount: amount != null ? `${(amount/100).toFixed(2)} ${currency}` : null });
+
+  if (!email) {
+    logger.warn('invoice_paid: no customer email found');
+    return res.status(200).json({ received: true });
+  }
+
+  const isVGB = product.toLowerCase().includes('viral growth blueprint') ||
+                product === VGB_PRODUCT;
+
+  if (isVGB) {
+    handleVGBPurchase(email, product).catch(err =>
+      logger.error('handleVGBPurchase failed', { email, error: err.message })
+    );
+  } else {
+    sendTypeformEmail(email, product).catch(err =>
+      logger.error('sendTypeformEmail failed', { email, error: err.message })
+    );
+  }
+
+  return res.status(200).json({ received: true });
+});
+
+async function handleVGBPurchase(email, product) {
+  logger.info('VGB purchase — creating subscriber', { email });
+  const token = addSubscriber(email, product);
+  await sendVGBAccessEmail(email, token);
+  logger.info('VGB access email sent', { email });
+}
+
+app.get('/vgb/:token', (req, res) => {
+  const subscriber = getSubscriberByToken(req.params.token);
+  if (!subscriber) {
+    return res.status(404).send(`
+      <html><body style="background:#0A0A08;color:#F0EDE6;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;text-align:center;">
+        <div>
+          <p style="color:#C8A96E;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:16px;">Vibral Studio</p>
+          <h1 style="font-size:24px;margin-bottom:12px;">Link not found.</h1>
+          <p style="color:#888880;">Check your email or contact <a href="mailto:contact@vibralstudio.com" style="color:#C8A96E;">contact@vibralstudio.com</a></p>
+        </div>
+      </body></html>
+    `);
+  }
+
+  const published = getPublished();
+  res.send(renderVGBPage(published, subscriber.email));
+});
+
+app.get('/admin', adminAuth, (req, res) => {
+  const subscribers = getAllSubscribers();
+  const published   = getPublished();
+  const draft       = getDraft();
+  res.send(renderAdminDashboard(subscribers, published, draft));
+});
+
+app.post('/admin/save', adminAuth, (req, res) => {
+  try {
+    const { sectionsJson, weekLabel } = req.body;
+    const sections = JSON.parse(sectionsJson);
+    publishDirect(sections, weekLabel);
+    logger.info('Admin published VGB update', { weekLabel, sections: sections.length });
+    res.redirect('/admin?success=1');
+  } catch (err) {
+    logger.error('Admin save failed', { error: err.message });
+    res.status(400).send(`Error: ${err.message} — <a href="/admin" style="color:#C8A96E;">Go back</a>`);
+  }
+});
+
+app.post('/admin/publish', adminAuth, (req, res) => {
+  try {
+    publishDraft();
+    logger.info('Admin published weekly draft');
+    res.redirect('/admin?success=1');
+  } catch (err) {
+    res.status(400).send(`Error: ${err.message}`);
+  }
+});
+
+async function sendTypeformEmail(customerEmail, product) {
+  sgMail.setApiKey(config.sendgridApiKey);
+  const typeformUrl = `${config.typeformBaseUrl}?email=${encodeURIComponent(customerEmail)}`;
+
+  await withRetry(
+    () => sgMail.send({
+      to: customerEmail,
+      from: config.fromEmail,
+      subject: "Your Custom Growth Blueprint — here's what to do next",
+      text: [
+        'Thanks for purchasing your Custom Growth Blueprint.',
+        '',
+        'Please fill out the form below and take your time answering each question.',
+        'These answers will teach you a lot about yourself and will help us build your personalized growth system.',
+        '',
+        typeformUrl,
+        '',
+        'Talk soon,',
+        'Vibral Studio',
+      ].join('\n'),
+      html: `
+        <p>Thanks for purchasing your Custom Growth Blueprint.</p>
+        <p>Please fill out the form below and take your time answering each question.
+        These answers will teach you a lot about yourself and will help us build your personalized growth system.</p>
+        <p><a href="${typeformUrl}" style="display:inline-block;padding:12px 24px;background:#000;color:#fff;text-decoration:none;border-radius:6px;font-weight:bold;">Fill out the form</a></p>
+        <p style="color:#666;font-size:13px;">Or copy this link: ${typeformUrl}</p>
+        <p>Talk soon,<br>Vibral Studio</p>
+      `,
+    }),
+    { attempts: 3, delayMs: 1000, label: 'Typeform onboarding email' },
+  );
+
+  logger.info('Typeform email sent', { email: customerEmail });
+}
+
+let inFlight = 0;
+
+app.post('/typeform-webhook', (req, res) => {
+  res.status(200).json({ received: true });
+
+  const responseToken = req.body?.form_response?.token;
+  if (!responseToken) {
+    logger.warn('typeform-webhook: no form_response.token');
+    return;
+  }
+
+  inFlight++;
+  runBlueprintPipeline(responseToken).finally(() => { inFlight--; });
+});
+
+async function runBlueprintPipeline(responseToken) {
+  const start = Date.now();
+  logger.info('Pipeline started', { token: responseToken });
+
+  try {
+    const { email, answers } = await fetchTypeformResponse(responseToken);
+    if (!email) { logger.error('Pipeline aborted: no email', { token: responseToken }); return; }
+
+    logger.info('Generating blueprint', { token: responseToken, email });
+    const blueprintJson = await generateBlueprint(answers);
+
+    logger.info('Rendering template', { token: responseToken });
+    const blueprintHtml = renderTemplate(blueprintJson);
+
+    logger.info('Generating PDF', { token: responseToken });
+    const pdfBuffer = await generatePDF(blueprintHtml);
+
+    logger.info('Sending email', { token: responseToken, email });
+    await sendBlueprintEmail(email, pdfBuffer);
+
+    logger.info('Pipeline complete', { token: responseToken, email, ms: Date.now() - start });
+  } catch (err) {
+    logger.error('Pipeline failed', { token: responseToken, error: err.message, ms: Date.now() - start });
+  }
+}
+
+function shutdown(signal) {
+  logger.info(`${signal} received`, { inFlight });
+  const deadline = Date.now() + 30_000;
+  const poll = setInterval(() => {
+    if (inFlight === 0 || Date.now() > deadline) {
+      clearInterval(poll);
+      process.exit(0);
+    }
+  }, 500);
+}
+
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT',  () => shutdown('SIGINT'));
+
+app.listen(config.port, () => {
+  logger.info('Server started', { port: config.port });
+  logger.info('VGB system active', { subscribers: getActiveCount() });
+  if (!config.whopWebhookSecret) logger.warn('WHOP_WEBHOOK_SECRET not set');
+});
