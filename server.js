@@ -154,6 +154,36 @@ app.post('/admin/save', adminAuth, (req, res) => {
   }
 });
 
+// Receive weekly draft from Mac pipeline
+app.post('/admin/draft', (req, res) => {
+  const auth = req.headers['authorization'];
+  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'vibral2026';
+  if (auth !== `Bearer ${ADMIN_PASSWORD}`) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  try {
+    const { sections, weekLabel } = req.body;
+    if (!sections || !Array.isArray(sections)) {
+      return res.status(400).json({ error: 'Invalid sections' });
+    }
+
+    saveDraft(sections, weekLabel);
+    logger.info('Weekly draft received from pipeline', { weekLabel, sections: sections.length });
+
+    // Send approval email
+    const approveUrl = `https://whop-webhook-production.up.railway.app/admin`;
+    const weekLabelSafe = weekLabel || 'This week';
+    sendApprovalEmail(ADMIN_EMAIL, weekLabelSafe, approveUrl).catch(err =>
+      logger.error('Approval email failed', { error: err.message })
+    );
+
+    return res.status(200).json({ received: true, weekLabel });
+  } catch (err) {
+    logger.error('Draft receive failed', { error: err.message });
+    return res.status(500).json({ error: err.message });
+  }
+});
 app.post('/admin/publish', adminAuth, (req, res) => {
   try {
     publishDraft();
