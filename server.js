@@ -57,7 +57,6 @@ function adminAuth(req, res, next) {
 app.get('/free-blueprint', (_req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'free-blueprint.html'));
 });
-});
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString(), vgbSubscribers: getActiveCount() });
 });
