@@ -83,7 +83,7 @@ if (config.whopWebhookSecret && signature && !verifyWhopSignature(req.body, sign
 
   const { action, data } = payload;
 
-  logger.info('Webhook received', { action, data: JSON.stringify(data).slice(0, 200) });
+  logger.info('Webhook received', { action, payload: JSON.stringify(payload).slice(0, 500) });
 
 if (action !== 'invoice_paid') {
   return res.status(200).json({ received: true, skipped: action });
