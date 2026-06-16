@@ -10,6 +10,7 @@
     "@anthropic-ai/sdk": "^0.96.0",
     "@sendgrid/mail": "^8.1.6",
     "express": "^4.19.2",
-    "puppeteer": "^22.0.0"
+    "puppeteer": "^22.0.0",
+    "pg": "^8.11.0"
   }
 }
