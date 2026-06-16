@@ -32,17 +32,6 @@ app.use('/webhook', express.raw({ type: 'application/json' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-function verifyWhopSignature(rawBody, signatureHeader) {
-  if (!config.whopWebhookSecret) return true;
-  const expected = crypto
-    .createHmac('sha256', config.whopWebhookSecret)
-    .update(rawBody)
-    .digest('hex');
-  const a = Buffer.from(expected);
-  const b = Buffer.from(signatureHeader ?? '');
-  return a.length === b.length && crypto.timingSafeEqual(a, b);
-}
-
 function adminAuth(req, res, next) {
   const auth = req.headers['authorization'];
   if (!auth || !auth.startsWith('Basic ')) {
@@ -66,39 +55,42 @@ app.get('/free-blueprint', (_req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'free-blueprint.html'));
 });
 
-app.post('/webhook', (req, res) => {
-  const signature = req.headers['whop-signature'] || 
-                  req.headers['x-whop-signature'] ||
-                  req.headers['x-signature'] ||
-                  req.headers['authorization'];
+// ── Whop webhook ─────────────────────────────────────────────────────────────
 
-if (config.whopWebhookSecret && signature && !verifyWhopSignature(req.body, signature)) {
-  logger.warn('Invalid signature', { signature: signature?.slice(0,10) });
-  return res.status(401).json({ error: 'Invalid signature' });
-}
+app.post('/webhook', (req, res) => {
+  // Always respond 200 immediately so Whop doesn't retry
+  res.status(200).json({ received: true });
 
   let payload;
   try { payload = JSON.parse(req.body); }
-  catch { return res.status(400).json({ error: 'Invalid JSON' }); }
+  catch { return; }
 
   const { action, data } = payload;
 
-  logger.info('Webhook received', { action, payload: JSON.stringify(payload).slice(0, 500) });
+  logger.info('WHOP EVENT', { action, raw: JSON.stringify(payload).slice(0, 300) });
 
-if (action !== 'invoice_paid') {
-  return res.status(200).json({ received: true, skipped: action });
-}
+  // Extract email from all possible Whop payload shapes
+  const email = 
+    data?.user?.email ??
+    data?.customer?.email ??
+    data?.membership?.user?.email ??
+    data?.email ??
+    null;
 
-  const email    = data?.user?.email ?? data?.customer?.email ?? null;
-  const product  = data?.plan?.name  ?? data?.product?.name  ?? data?.membership?.plan?.name ?? '(unknown product)';
-  const amount   = data?.total ?? data?.amount;
-  const currency = (data?.currency ?? 'usd').toUpperCase();
+  // Extract product name from all possible Whop payload shapes  
+  const product =
+    data?.plan?.name ??
+    data?.product?.name ??
+    data?.membership?.plan?.name ??
+    data?.access_pass?.name ??
+    data?.plan?.product?.name ??
+    '';
 
-  logger.info('invoice_paid', { email, product, amount: amount != null ? `${(amount/100).toFixed(2)} ${currency}` : null });
+  logger.info('Parsed', { email, product, action });
 
   if (!email) {
-    logger.warn('invoice_paid: no customer email found');
-    return res.status(200).json({ received: true });
+    logger.warn('No email found in payload');
+    return;
   }
 
   const isVGB = product.toLowerCase().includes('viral growth blueprint') || product === VGB_PRODUCT;
@@ -107,13 +99,13 @@ if (action !== 'invoice_paid') {
     handleVGBPurchase(email, product).catch(err =>
       logger.error('handleVGBPurchase failed', { email, error: err.message })
     );
-  } else {
+  } else if (product.toLowerCase().includes('custom')) {
     sendTypeformEmail(email, product).catch(err =>
       logger.error('sendTypeformEmail failed', { email, error: err.message })
     );
+  } else {
+    logger.info('Unknown product — skipping', { product });
   }
-
-  return res.status(200).json({ received: true });
 });
 
 async function handleVGBPurchase(email, product) {
@@ -122,6 +114,8 @@ async function handleVGBPurchase(email, product) {
   await sendVGBAccessEmail(email, token);
   logger.info('VGB access email sent', { email });
 }
+
+// ── VGB subscriber page ──────────────────────────────────────────────────────
 
 app.get('/vgb/:token', async (req, res) => {
   const subscriber = await getSubscriberByToken(req.params.token);
@@ -139,6 +133,8 @@ app.get('/vgb/:token', async (req, res) => {
   const published = await getPublished();
   res.send(renderVGBPage(published, subscriber.email));
 });
+
+// ── Admin ─────────────────────────────────────────────────────────────────────
 
 app.get('/admin', adminAuth, async (req, res) => {
   const subscribers = await getAllSubscribers();
@@ -193,6 +189,8 @@ app.post('/admin/draft', async (req, res) => {
   }
 });
 
+// ── Custom Blueprint — Typeform ───────────────────────────────────────────────
+
 async function sendTypeformEmail(customerEmail, product) {
   sgMail.setApiKey(config.sendgridApiKey);
   const typeformUrl = `${config.typeformBaseUrl}?email=${encodeURIComponent(customerEmail)}`;
@@ -204,7 +202,7 @@ async function sendTypeformEmail(customerEmail, product) {
       text: [
         'Thanks for purchasing your Custom Growth Blueprint.',
         '',
-        'Please fill out the form below and take your time answering each question.',
+        'Please fill out the form below and take your time.',
         '',
         typeformUrl,
         '',
@@ -223,6 +221,8 @@ async function sendTypeformEmail(customerEmail, product) {
   );
   logger.info('Typeform email sent', { email: customerEmail });
 }
+
+// ── Typeform webhook ──────────────────────────────────────────────────────────
 
 let inFlight = 0;
 
@@ -250,6 +250,8 @@ async function runBlueprintPipeline(responseToken) {
   }
 }
 
+// ── Shutdown ──────────────────────────────────────────────────────────────────
+
 function shutdown(signal) {
   logger.info(`${signal} received`, { inFlight });
   const deadline = Date.now() + 30_000;
@@ -260,6 +262,8 @@ function shutdown(signal) {
 
 process.on('SIGTERM', () => shutdown('SIGTERM'));
 process.on('SIGINT',  () => shutdown('SIGINT'));
+
+// ── Start ─────────────────────────────────────────────────────────────────────
 
 app.listen(config.port, () => {
   logger.info('Server started', { port: config.port });
