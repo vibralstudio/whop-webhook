@@ -85,9 +85,11 @@ app.post('/webhook', (req, res) => {
 
   const { action, data } = payload;
 
-  if (action !== 'invoice_paid') {
-    return res.status(200).json({ received: true, skipped: action });
-  }
+  logger.info('Webhook received', { action, data: JSON.stringify(data).slice(0, 200) });
+
+if (action !== 'invoice_paid') {
+  return res.status(200).json({ received: true, skipped: action });
+}
 
   const email    = data?.user?.email ?? data?.customer?.email ?? null;
   const product  = data?.plan?.name  ?? data?.product?.name  ?? data?.membership?.plan?.name ?? '(unknown product)';
