@@ -111,7 +111,11 @@ app.post('/webhook', (req, res) => {
 
 async function handleVGBPurchase(email, product) {
   logger.info('VGB purchase — creating subscriber', { email });
-  const token = await addSubscriber(email, product);
+  const { token, isNew } = await addSubscriber(email, product);
+  if (!isNew) {
+    logger.info('VGB subscriber already exists — skipping email', { email });
+    return;
+  }
   await sendVGBAccessEmail(email, token);
   logger.info('VGB access email sent', { email });
 }
