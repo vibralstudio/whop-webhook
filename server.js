@@ -79,6 +79,7 @@ app.post('/webhook', (req, res) => {
 
   // Extract product name from all possible Whop payload shapes  
   const product =
+    data?.product?.title ??
     data?.plan?.name ??
     data?.product?.name ??
     data?.membership?.plan?.name ??
