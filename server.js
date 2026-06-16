@@ -67,7 +67,7 @@ app.post('/webhook', (req, res) => {
 
   const { action, data } = payload;
 
-  logger.info('WHOP EVENT', { action, raw: JSON.stringify(payload).slice(0, 300) });
+  logger.info('WHOP EVENT', { action, raw: JSON.stringify(payload).slice(0, 2000) });
 
   // Extract email from all possible Whop payload shapes
   const email = 
