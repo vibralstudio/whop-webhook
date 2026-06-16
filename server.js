@@ -9,22 +9,24 @@ const { generateBlueprint }      = require('./lib/generate-blueprint');
 const { renderTemplate }         = require('./lib/render-template');
 const { generatePDF }            = require('./lib/generate-pdf');
 const { sendBlueprintEmail }     = require('./lib/send-blueprint-email');
-const fs = require('fs');
-const path = require('path');
+
 const { addSubscriber, getSubscriberByToken, getAllSubscribers, getActiveCount } = require('./lib/vgb-store');
 const { getPublished, getDraft, saveDraft, publishDraft, publishDirect }        = require('./lib/vgb-content-store');
 const { sendVGBAccessEmail, sendApprovalEmail }                                 = require('./lib/vgb-email');
 const { renderVGBPage }                                                          = require('./lib/render-vgb');
 const { renderAdminDashboard }                                                   = require('./lib/render-admin');
 
+const fs   = require('fs');
+const path = require('path');
+
 config.validateConfig();
 
 const app = express();
 
-const ADMIN_PASSWORD  = process.env.ADMIN_PASSWORD  || 'vibral2026';
-const ADMIN_EMAIL     = process.env.ADMIN_EMAIL     || 'contact@vibralstudio.com';
-const VGB_PRODUCT     = process.env.VGB_PRODUCT_NAME || 'The Viral Growth Blueprint';
-const BASE_URL        = process.env.BASE_URL         || 'https://whop-webhook-production.up.railway.app';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'vibral2026';
+const ADMIN_EMAIL    = process.env.ADMIN_EMAIL    || 'contact@vibralstudio.com';
+const VGB_PRODUCT    = process.env.VGB_PRODUCT_NAME || 'The Viral Growth Blueprint';
+const BASE_URL       = process.env.BASE_URL || 'https://whop-webhook-production.up.railway.app';
 
 app.use('/webhook', express.raw({ type: 'application/json' }));
 app.use(express.json());
@@ -47,18 +49,21 @@ function adminAuth(req, res, next) {
     res.setHeader('WWW-Authenticate', 'Basic realm="VGB Admin"');
     return res.status(401).send('Authentication required.');
   }
-  const [user, pass] = Buffer.from(auth.slice(6), 'base64').toString().split(':');
+  const [, pass] = Buffer.from(auth.slice(6), 'base64').toString().split(':');
   if (pass !== ADMIN_PASSWORD) {
     res.setHeader('WWW-Authenticate', 'Basic realm="VGB Admin"');
     return res.status(401).send('Wrong password.');
   }
   next();
 }
+
+app.get('/health', async (_req, res) => {
+  const count = await getActiveCount();
+  res.json({ status: 'ok', timestamp: new Date().toISOString(), vgbSubscribers: count });
+});
+
 app.get('/free-blueprint', (_req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'free-blueprint.html'));
-});
-app.get('/health', (_req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString(), vgbSubscribers: getActiveCount() });
 });
 
 app.post('/webhook', (req, res) => {
@@ -96,8 +101,7 @@ app.post('/webhook', (req, res) => {
     return res.status(200).json({ received: true });
   }
 
-  const isVGB = product.toLowerCase().includes('viral growth blueprint') ||
-                product === VGB_PRODUCT;
+  const isVGB = product.toLowerCase().includes('viral growth blueprint') || product === VGB_PRODUCT;
 
   if (isVGB) {
     handleVGBPurchase(email, product).catch(err =>
@@ -114,13 +118,13 @@ app.post('/webhook', (req, res) => {
 
 async function handleVGBPurchase(email, product) {
   logger.info('VGB purchase — creating subscriber', { email });
-  const token = addSubscriber(email, product);
+  const token = await addSubscriber(email, product);
   await sendVGBAccessEmail(email, token);
   logger.info('VGB access email sent', { email });
 }
 
-app.get('/vgb/:token', (req, res) => {
-  const subscriber = getSubscriberByToken(req.params.token);
+app.get('/vgb/:token', async (req, res) => {
+  const subscriber = await getSubscriberByToken(req.params.token);
   if (!subscriber) {
     return res.status(404).send(`
       <html><body style="background:#0A0A08;color:#F0EDE6;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;text-align:center;">
@@ -132,23 +136,22 @@ app.get('/vgb/:token', (req, res) => {
       </body></html>
     `);
   }
-
-  const published = getPublished();
+  const published = await getPublished();
   res.send(renderVGBPage(published, subscriber.email));
 });
 
-app.get('/admin', adminAuth, (req, res) => {
-  const subscribers = getAllSubscribers();
-  const published   = getPublished();
-  const draft       = getDraft();
+app.get('/admin', adminAuth, async (req, res) => {
+  const subscribers = await getAllSubscribers();
+  const published   = await getPublished();
+  const draft       = await getDraft();
   res.send(renderAdminDashboard(subscribers, published, draft));
 });
 
-app.post('/admin/save', adminAuth, (req, res) => {
+app.post('/admin/save', adminAuth, async (req, res) => {
   try {
     const { sectionsJson, weekLabel } = req.body;
     const sections = JSON.parse(sectionsJson);
-    publishDirect(sections, weekLabel);
+    await publishDirect(sections, weekLabel);
     logger.info('Admin published VGB update', { weekLabel, sections: sections.length });
     res.redirect('/admin?success=1');
   } catch (err) {
@@ -157,39 +160,9 @@ app.post('/admin/save', adminAuth, (req, res) => {
   }
 });
 
-// Receive weekly draft from Mac pipeline
-app.post('/admin/draft', (req, res) => {
-  const auth = req.headers['authorization'];
-  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'vibral2026';
-  if (auth !== `Bearer ${ADMIN_PASSWORD}`) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-
+app.post('/admin/publish', adminAuth, async (req, res) => {
   try {
-    const { sections, weekLabel } = req.body;
-    if (!sections || !Array.isArray(sections)) {
-      return res.status(400).json({ error: 'Invalid sections' });
-    }
-
-    saveDraft(sections, weekLabel);
-    logger.info('Weekly draft received from pipeline', { weekLabel, sections: sections.length });
-
-    // Send approval email
-    const approveUrl = `https://whop-webhook-production.up.railway.app/admin`;
-    const weekLabelSafe = weekLabel || 'This week';
-    sendApprovalEmail(ADMIN_EMAIL, weekLabelSafe, approveUrl).catch(err =>
-      logger.error('Approval email failed', { error: err.message })
-    );
-
-    return res.status(200).json({ received: true, weekLabel });
-  } catch (err) {
-    logger.error('Draft receive failed', { error: err.message });
-    return res.status(500).json({ error: err.message });
-  }
-});
-app.post('/admin/publish', adminAuth, (req, res) => {
-  try {
-    publishDraft();
+    await publishDraft();
     logger.info('Admin published weekly draft');
     res.redirect('/admin?success=1');
   } catch (err) {
@@ -197,10 +170,32 @@ app.post('/admin/publish', adminAuth, (req, res) => {
   }
 });
 
+app.post('/admin/draft', async (req, res) => {
+  const auth = req.headers['authorization'];
+  if (auth !== `Bearer ${ADMIN_PASSWORD}`) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  try {
+    const { sections, weekLabel } = req.body;
+    if (!sections || !Array.isArray(sections)) {
+      return res.status(400).json({ error: 'Invalid sections' });
+    }
+    await saveDraft(sections, weekLabel);
+    logger.info('Weekly draft received', { weekLabel, sections: sections.length });
+    const approveUrl = `${BASE_URL}/admin`;
+    await sendApprovalEmail(ADMIN_EMAIL, weekLabel || 'This week', approveUrl).catch(err =>
+      logger.error('Approval email failed', { error: err.message })
+    );
+    return res.status(200).json({ received: true, weekLabel });
+  } catch (err) {
+    logger.error('Draft receive failed', { error: err.message });
+    return res.status(500).json({ error: err.message });
+  }
+});
+
 async function sendTypeformEmail(customerEmail, product) {
   sgMail.setApiKey(config.sendgridApiKey);
   const typeformUrl = `${config.typeformBaseUrl}?email=${encodeURIComponent(customerEmail)}`;
-
   await withRetry(
     () => sgMail.send({
       to: customerEmail,
@@ -210,7 +205,6 @@ async function sendTypeformEmail(customerEmail, product) {
         'Thanks for purchasing your Custom Growth Blueprint.',
         '',
         'Please fill out the form below and take your time answering each question.',
-        'These answers will teach you a lot about yourself and will help us build your personalized growth system.',
         '',
         typeformUrl,
         '',
@@ -219,8 +213,7 @@ async function sendTypeformEmail(customerEmail, product) {
       ].join('\n'),
       html: `
         <p>Thanks for purchasing your Custom Growth Blueprint.</p>
-        <p>Please fill out the form below and take your time answering each question.
-        These answers will teach you a lot about yourself and will help us build your personalized growth system.</p>
+        <p>Please fill out the form and take your time answering each question.</p>
         <p><a href="${typeformUrl}" style="display:inline-block;padding:12px 24px;background:#000;color:#fff;text-decoration:none;border-radius:6px;font-weight:bold;">Fill out the form</a></p>
         <p style="color:#666;font-size:13px;">Or copy this link: ${typeformUrl}</p>
         <p>Talk soon,<br>Vibral Studio</p>
@@ -228,7 +221,6 @@ async function sendTypeformEmail(customerEmail, product) {
     }),
     { attempts: 3, delayMs: 1000, label: 'Typeform onboarding email' },
   );
-
   logger.info('Typeform email sent', { email: customerEmail });
 }
 
@@ -236,13 +228,8 @@ let inFlight = 0;
 
 app.post('/typeform-webhook', (req, res) => {
   res.status(200).json({ received: true });
-
   const responseToken = req.body?.form_response?.token;
-  if (!responseToken) {
-    logger.warn('typeform-webhook: no form_response.token');
-    return;
-  }
-
+  if (!responseToken) { logger.warn('typeform-webhook: no token'); return; }
   inFlight++;
   runBlueprintPipeline(responseToken).finally(() => { inFlight--; });
 });
@@ -250,26 +237,16 @@ app.post('/typeform-webhook', (req, res) => {
 async function runBlueprintPipeline(responseToken) {
   const start = Date.now();
   logger.info('Pipeline started', { token: responseToken });
-
   try {
     const { email, answers } = await fetchTypeformResponse(responseToken);
     if (!email) { logger.error('Pipeline aborted: no email', { token: responseToken }); return; }
-
-    logger.info('Generating blueprint', { token: responseToken, email });
     const blueprintJson = await generateBlueprint(answers);
-
-    logger.info('Rendering template', { token: responseToken });
     const blueprintHtml = renderTemplate(blueprintJson);
-
-    logger.info('Generating PDF', { token: responseToken });
-    const pdfBuffer = await generatePDF(blueprintHtml);
-
-    logger.info('Sending email', { token: responseToken, email });
+    const pdfBuffer     = await generatePDF(blueprintHtml);
     await sendBlueprintEmail(email, pdfBuffer);
-
     logger.info('Pipeline complete', { token: responseToken, email, ms: Date.now() - start });
   } catch (err) {
-    logger.error('Pipeline failed', { token: responseToken, error: err.message, ms: Date.now() - start });
+    logger.error('Pipeline failed', { token: responseToken, error: err.message });
   }
 }
 
@@ -277,10 +254,7 @@ function shutdown(signal) {
   logger.info(`${signal} received`, { inFlight });
   const deadline = Date.now() + 30_000;
   const poll = setInterval(() => {
-    if (inFlight === 0 || Date.now() > deadline) {
-      clearInterval(poll);
-      process.exit(0);
-    }
+    if (inFlight === 0 || Date.now() > deadline) { clearInterval(poll); process.exit(0); }
   }, 500);
 }
 
@@ -289,6 +263,5 @@ process.on('SIGINT',  () => shutdown('SIGINT'));
 
 app.listen(config.port, () => {
   logger.info('Server started', { port: config.port });
-  logger.info('VGB system active', { subscribers: getActiveCount() });
   if (!config.whopWebhookSecret) logger.warn('WHOP_WEBHOOK_SECRET not set');
 });
