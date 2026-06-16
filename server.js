@@ -67,17 +67,15 @@ app.get('/free-blueprint', (_req, res) => {
 });
 
 app.post('/webhook', (req, res) => {
-  const signature = req.headers['whop-signature'];
+  const signature = req.headers['whop-signature'] || 
+                  req.headers['x-whop-signature'] ||
+                  req.headers['x-signature'] ||
+                  req.headers['authorization'];
 
- if (config.whopWebhookSecret && !signature) {
-  logger.warn('Missing whop-signature header', { headers: JSON.stringify(req.headers) });
-  return res.status(401).json({ error: 'Missing signature' });
+if (config.whopWebhookSecret && signature && !verifyWhopSignature(req.body, signature)) {
+  logger.warn('Invalid signature', { signature: signature?.slice(0,10) });
+  return res.status(401).json({ error: 'Invalid signature' });
 }
-
-  if (!verifyWhopSignature(req.body, signature)) {
-    logger.warn('Invalid Whop webhook signature');
-    return res.status(401).json({ error: 'Invalid signature' });
-  }
 
   let payload;
   try { payload = JSON.parse(req.body); }
