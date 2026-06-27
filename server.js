@@ -154,7 +154,10 @@ app.get('/vgb/:token', async (req, res) => {
 });
 
 // ── Admin ─────────────────────────────────────────────────────────────────────
-
+app.get('/admin/preview', adminAuth, async (req, res) => {
+  const published = await getPublished();
+  res.send(renderVGBPage(published, 'preview@vibralstudio.com'));
+});
 app.get('/admin', adminAuth, async (req, res) => {
   const subscribers = await getAllSubscribers();
   const published   = await getPublished();
