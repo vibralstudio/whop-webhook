@@ -6,7 +6,7 @@
 <title>Vibral Studio — Free Mini Blueprint</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
-
+ 
   :root {
     --black: #0A0A08;
     --black2: #111110;
@@ -17,9 +17,9 @@
     --grey-light: #3A3A38;
     --text-muted: #888880;
   }
-
+ 
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
+ 
   body {
     background: var(--black);
     color: var(--white);
@@ -28,7 +28,7 @@
     line-height: 1.7;
     -webkit-font-smoothing: antialiased;
   }
-
+ 
   /* ── COVER ── */
   .cover {
     min-height: 100vh;
@@ -40,7 +40,7 @@
     position: relative;
     overflow: hidden;
   }
-
+ 
   .cover::before {
     content: '';
     position: absolute;
@@ -49,7 +49,7 @@
     background: radial-gradient(circle, rgba(200,169,110,0.08) 0%, transparent 70%);
     pointer-events: none;
   }
-
+ 
   .cover-label {
     font-family: 'Syne', sans-serif;
     font-size: 11px;
@@ -58,7 +58,7 @@
     color: var(--gold);
     text-transform: uppercase;
   }
-
+ 
   .cover-center {
     flex: 1;
     display: flex;
@@ -66,7 +66,7 @@
     justify-content: center;
     padding: 80px 0 40px;
   }
-
+ 
   .cover-eyebrow {
     font-family: 'Syne', sans-serif;
     font-size: 11px;
@@ -76,7 +76,7 @@
     text-transform: uppercase;
     margin-bottom: 28px;
   }
-
+ 
   .cover-title {
     font-family: 'Syne', sans-serif;
     font-size: clamp(52px, 8vw, 88px);
@@ -86,9 +86,9 @@
     letter-spacing: -0.02em;
     margin-bottom: 12px;
   }
-
+ 
   .cover-title span { color: var(--gold); }
-
+ 
   .cover-subtitle {
     font-family: 'Syne', sans-serif;
     font-size: clamp(28px, 4vw, 42px);
@@ -99,7 +99,7 @@
     letter-spacing: -0.01em;
     margin-bottom: 48px;
   }
-
+ 
   .cover-desc {
     font-size: 15px;
     color: var(--text-muted);
@@ -107,13 +107,13 @@
     line-height: 1.8;
     font-weight: 300;
   }
-
+ 
   .cover-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
-
+ 
   .cover-footer-brand {
     font-family: 'Syne', sans-serif;
     font-size: 12px;
@@ -122,27 +122,27 @@
     color: var(--gold);
     text-transform: uppercase;
   }
-
+ 
   .cover-footer-meta {
     font-size: 12px;
     color: var(--text-muted);
     letter-spacing: 0.05em;
   }
-
+ 
   .gold-line {
     width: 48px;
     height: 2px;
     background: var(--gold);
     margin-bottom: 40px;
   }
-
+ 
   /* ── PAGES ── */
   .page {
     padding: 80px 64px;
     border-top: 1px solid var(--grey);
     position: relative;
   }
-
+ 
   .page-number {
     font-family: 'Syne', sans-serif;
     font-size: 11px;
@@ -152,7 +152,7 @@
     text-transform: uppercase;
     margin-bottom: 48px;
   }
-
+ 
   .section-title {
     font-family: 'Syne', sans-serif;
     font-size: clamp(36px, 5vw, 60px);
@@ -162,7 +162,7 @@
     letter-spacing: -0.02em;
     margin-bottom: 16px;
   }
-
+ 
   .section-lead {
     font-size: 16px;
     color: var(--text-muted);
@@ -171,7 +171,7 @@
     font-weight: 300;
     margin-bottom: 56px;
   }
-
+ 
   /* RULES */
   .rules-grid {
     display: grid;
@@ -179,13 +179,13 @@
     gap: 2px;
     margin-bottom: 2px;
   }
-
+ 
   .rule-card {
     background: var(--black2);
     padding: 36px 32px;
     border: 1px solid var(--grey);
   }
-
+ 
   .rule-num {
     font-family: 'Syne', sans-serif;
     font-size: 11px;
@@ -195,7 +195,7 @@
     margin-bottom: 16px;
     text-transform: uppercase;
   }
-
+ 
   .rule-title {
     font-family: 'Syne', sans-serif;
     font-size: 18px;
@@ -204,14 +204,14 @@
     margin-bottom: 12px;
     line-height: 1.2;
   }
-
+ 
   .rule-body {
     font-size: 14px;
     color: var(--text-muted);
     line-height: 1.75;
     font-weight: 300;
   }
-
+ 
   /* VIDEO CONCEPTS */
   .concepts-list {
     display: flex;
@@ -219,7 +219,7 @@
     gap: 2px;
     margin-bottom: 40px;
   }
-
+ 
   .concept-row {
     background: var(--black2);
     border: 1px solid var(--grey);
@@ -229,7 +229,7 @@
     gap: 32px;
     align-items: start;
   }
-
+ 
   .concept-num {
     font-family: 'Syne', sans-serif;
     font-size: 28px;
@@ -238,9 +238,9 @@
     line-height: 1;
     padding-top: 2px;
   }
-
+ 
   .concept-left {}
-
+ 
   .concept-name {
     font-family: 'Syne', sans-serif;
     font-size: 16px;
@@ -248,14 +248,14 @@
     color: var(--white);
     margin-bottom: 8px;
   }
-
+ 
   .concept-desc {
     font-size: 13px;
     color: var(--text-muted);
     font-weight: 300;
     line-height: 1.6;
   }
-
+ 
   .concept-caption {
     font-size: 13px;
     color: var(--gold-dim);
@@ -264,13 +264,13 @@
     line-height: 1.6;
     padding-top: 2px;
   }
-
+ 
   .concept-caption::before {
     content: '→ ';
     color: var(--gold);
     font-style: normal;
   }
-
+ 
   /* RETENTION CURVES */
   .curves-grid {
     display: grid;
@@ -278,16 +278,16 @@
     gap: 2px;
     margin-bottom: 40px;
   }
-
+ 
   .curve-card {
     background: var(--black2);
     border: 1px solid var(--grey);
     padding: 32px 28px;
   }
-
+ 
   .curve-card.good { border-top: 2px solid var(--gold); }
   .curve-card.bad { border-top: 2px solid #555; }
-
+ 
   .curve-label {
     font-family: 'Syne', sans-serif;
     font-size: 11px;
@@ -296,16 +296,16 @@
     text-transform: uppercase;
     margin-bottom: 16px;
   }
-
+ 
   .curve-label.good-label { color: var(--gold); }
   .curve-label.bad-label { color: var(--text-muted); }
-
+ 
   .curve-svg {
     width: 100%;
     height: 80px;
     margin-bottom: 20px;
   }
-
+ 
   .curve-title {
     font-family: 'Syne', sans-serif;
     font-size: 15px;
@@ -313,21 +313,21 @@
     color: var(--white);
     margin-bottom: 8px;
   }
-
+ 
   .curve-body {
     font-size: 13px;
     color: var(--text-muted);
     font-weight: 300;
     line-height: 1.7;
   }
-
+ 
   .curve-fix {
     margin-top: 10px;
     font-size: 13px;
     color: var(--gold);
     font-weight: 500;
   }
-
+ 
   /* SPLIT TABLE */
   .split-table {
     width: 100%;
@@ -335,9 +335,9 @@
     margin-top: 8px;
     margin-bottom: 40px;
   }
-
+ 
   .split-table thead tr { border-bottom: 1px solid var(--gold-dim); }
-
+ 
   .split-table th {
     font-family: 'Syne', sans-serif;
     font-size: 11px;
@@ -348,7 +348,7 @@
     text-align: left;
     padding: 0 24px 20px 0;
   }
-
+ 
   .split-table td {
     font-size: 14px;
     color: var(--text-muted);
@@ -358,7 +358,7 @@
     vertical-align: top;
     line-height: 1.6;
   }
-
+ 
   .split-table td:first-child {
     font-family: 'Syne', sans-serif;
     font-size: 13px;
@@ -366,7 +366,7 @@
     color: var(--white);
     width: 160px;
   }
-
+ 
   /* BRANDING */
   .branding-grid {
     display: grid;
@@ -374,13 +374,13 @@
     gap: 2px;
     margin-bottom: 40px;
   }
-
+ 
   .brand-card {
     background: var(--black2);
     border: 1px solid var(--grey);
     padding: 32px 28px;
   }
-
+ 
   .brand-card-label {
     font-family: 'Syne', sans-serif;
     font-size: 10px;
@@ -390,7 +390,7 @@
     text-transform: uppercase;
     margin-bottom: 16px;
   }
-
+ 
   .brand-card-title {
     font-family: 'Syne', sans-serif;
     font-size: 18px;
@@ -399,14 +399,14 @@
     margin-bottom: 10px;
     line-height: 1.2;
   }
-
+ 
   .brand-card-body {
     font-size: 13px;
     color: var(--text-muted);
     font-weight: 300;
     line-height: 1.7;
   }
-
+ 
   /* MANYCHAT */
   .manychat-steps {
     display: flex;
@@ -414,7 +414,7 @@
     gap: 2px;
     margin-bottom: 40px;
   }
-
+ 
   .mc-step {
     background: var(--black2);
     border: 1px solid var(--grey);
@@ -424,7 +424,7 @@
     gap: 24px;
     align-items: start;
   }
-
+ 
   .mc-step-num {
     font-family: 'Syne', sans-serif;
     font-size: 24px;
@@ -432,7 +432,7 @@
     color: var(--gold);
     line-height: 1;
   }
-
+ 
   .mc-step-title {
     font-family: 'Syne', sans-serif;
     font-size: 15px;
@@ -440,19 +440,19 @@
     color: var(--white);
     margin-bottom: 6px;
   }
-
+ 
   .mc-step-body {
     font-size: 14px;
     color: var(--text-muted);
     font-weight: 300;
     line-height: 1.7;
   }
-
+ 
   .mc-step-body strong {
     color: var(--white);
     font-weight: 500;
   }
-
+ 
   /* INSIGHT */
   .insight-block {
     background: var(--black2);
@@ -461,23 +461,23 @@
     padding: 28px 32px;
     margin-top: 40px;
   }
-
+ 
   .insight-block p {
     font-size: 15px;
     color: var(--white);
     line-height: 1.8;
     font-weight: 300;
   }
-
+ 
   .insight-block strong { color: var(--gold); font-weight: 500; }
-
+ 
   .divider {
     width: 100%;
     height: 1px;
     background: var(--grey);
     margin: 48px 0;
   }
-
+ 
   /* ── UPSELL ── */
   .upsell-page {
     padding: 80px 64px;
@@ -486,7 +486,7 @@
     position: relative;
     overflow: hidden;
   }
-
+ 
   .upsell-page::before {
     content: '';
     position: absolute;
@@ -496,7 +496,7 @@
     background: radial-gradient(circle, rgba(200,169,110,0.06) 0%, transparent 60%);
     pointer-events: none;
   }
-
+ 
   .upsell-eyebrow {
     font-family: 'Syne', sans-serif;
     font-size: 11px;
@@ -506,7 +506,7 @@
     text-transform: uppercase;
     margin-bottom: 32px;
   }
-
+ 
   .upsell-headline {
     font-family: 'Syne', sans-serif;
     font-size: clamp(40px, 6vw, 72px);
@@ -516,9 +516,9 @@
     color: var(--white);
     margin-bottom: 24px;
   }
-
+ 
   .upsell-headline span { color: var(--gold); }
-
+ 
   .upsell-sub {
     font-size: 16px;
     color: var(--text-muted);
@@ -527,14 +527,14 @@
     font-weight: 300;
     margin-bottom: 64px;
   }
-
+ 
   .products-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2px;
     margin-bottom: 48px;
   }
-
+ 
   .product-card {
     background: var(--black2);
     border: 1px solid var(--grey);
@@ -543,12 +543,12 @@
     flex-direction: column;
     position: relative;
   }
-
+ 
   .product-card.featured { border-color: var(--gold); }
-
+ 
   .product-badge {
     position: absolute;
-    top: 24px; right: 24px;
+    top: -14px; right: 24px;
     background: var(--gold);
     color: var(--black);
     font-family: 'Syne', sans-serif;
@@ -558,7 +558,7 @@
     text-transform: uppercase;
     padding: 5px 12px;
   }
-
+ 
   .product-label {
     font-family: 'Syne', sans-serif;
     font-size: 10px;
@@ -568,7 +568,7 @@
     text-transform: uppercase;
     margin-bottom: 16px;
   }
-
+ 
   .product-name {
     font-family: 'Syne', sans-serif;
     font-size: 26px;
@@ -577,7 +577,7 @@
     line-height: 1.1;
     margin-bottom: 8px;
   }
-
+ 
   .product-price {
     font-family: 'Syne', sans-serif;
     font-size: 40px;
@@ -587,20 +587,20 @@
     margin-bottom: 4px;
     line-height: 1;
   }
-
+ 
   .product-price-sub {
     font-size: 12px;
     color: var(--text-muted);
     margin-bottom: 32px;
     font-weight: 300;
   }
-
+ 
   .product-features {
     list-style: none;
     margin-bottom: 40px;
     flex: 1;
   }
-
+ 
   .product-features li {
     font-size: 14px;
     color: var(--text-muted);
@@ -612,16 +612,16 @@
     gap: 12px;
     line-height: 1.5;
   }
-
+ 
   .product-features li::before {
     content: '—';
     color: var(--gold);
     flex-shrink: 0;
     margin-top: 1px;
   }
-
+ 
   .product-features li strong { color: var(--white); font-weight: 500; }
-
+ 
   .btn {
     display: block;
     text-align: center;
@@ -634,21 +634,21 @@
     padding: 18px 32px;
     transition: all 0.2s;
   }
-
+ 
   .btn-gold { background: var(--gold); color: var(--black); }
   .btn-gold:hover { background: var(--white); }
   .btn-outline { background: transparent; color: var(--gold); border: 1px solid var(--gold); }
   .btn-outline:hover { background: var(--gold); color: var(--black); }
-
+ 
   .upsell-closer {
     text-align: center;
     padding-top: 48px;
     border-top: 1px solid var(--grey);
   }
-
+ 
   .upsell-closer p { font-size: 13px; color: var(--text-muted); font-weight: 300; line-height: 1.8; }
   .upsell-closer a { color: var(--gold); text-decoration: none; }
-
+ 
   @media (max-width: 768px) {
     .cover, .page, .upsell-page { padding: 48px 24px; }
     .rules-grid, .products-grid, .curves-grid, .branding-grid { grid-template-columns: 1fr; }
@@ -658,7 +658,7 @@
 </style>
 </head>
 <body>
-
+ 
 <!-- ── COVER ── -->
 <div class="cover">
   <div class="cover-label">Vibral Studio</div>
@@ -674,13 +674,54 @@
     <span class="cover-footer-meta">contact@vibralstudio.com · Confidential</span>
   </div>
 </div>
-
+ 
+<!-- ── TOP UPSELL ── -->
+<div class="page" style="padding-top:56px; padding-bottom:48px; border-top:1px solid var(--grey);">
+  <p style="text-align:center; font-size:13px; color:var(--text-muted); font-weight:300; margin-bottom:24px;">Your <strong style="color:var(--gold);">free mini blueprint</strong> is below ⬇️ — but first, see what's possible.</p>
+  <h2 style="font-family:'Syne',sans-serif; font-size:clamp(28px,4vw,44px); font-weight:800; line-height:1; letter-spacing:-0.02em; margin-bottom:32px; text-align:center;">THE <span style="color:var(--gold);">#1 TOOL</span> TO MAKE<br>MUSIC ARTISTS GO VIRAL</h2>
+ 
+  <div class="products-grid" style="margin-bottom:32px;">
+ 
+    <div class="product-card featured" style="padding:32px 28px;">
+      <div class="product-label">Monthly Subscription</div>
+      <div class="product-badge">Most Popular</div>
+      <div class="product-name" style="font-size:21px;">Viral Growth<br>Blueprint</div>
+      <div style="font-family:'Syne',sans-serif; font-size:14px; font-weight:600; color:var(--text-muted); text-decoration:line-through; margin-bottom:2px;">$79</div>
+      <div class="product-price" style="font-size:32px;">$49</div>
+      <div class="product-price-sub">/ month · cancel anytime</div>
+      <ul class="product-features" style="margin-bottom:24px;">
+        <li><strong>Updated every week</strong> — never miss a trend</li>
+        <li><strong>Full 9-section system</strong> — every framework, in detail</li>
+        <li><strong>83 ready-to-use captions</strong> across 5 styles</li>
+      </ul>
+      <a href="https://whop.com/vibral-studio/the-viral-growth-blueprint/?ref=related_products&funnelId=product_3b7ff935-ddd7-45ce-ae0f-daad122c1deb" class="btn btn-gold">Get the Full Blueprint →</a>
+    </div>
+ 
+    <div class="product-card" style="padding:32px 28px;">
+      <div class="product-label">One-Time · Done For You</div>
+      <div class="product-name" style="font-size:21px;">Custom Growth<br>Blueprint</div>
+      <div style="font-family:'Syne',sans-serif; font-size:14px; font-weight:600; color:var(--text-muted); text-decoration:line-through; margin-bottom:2px;">$625</div>
+      <div class="product-price" style="font-size:32px;">$500</div>
+      <div class="product-price-sub">one payment · delivered in 24h</div>
+      <ul class="product-features" style="margin-bottom:24px;">
+        <li><strong>Built around you</strong> — your genre, your identity</li>
+        <li><strong>90-day action plan</strong> — your real numbers</li>
+        <li><strong>Delivered in 24 hours</strong> — fast turnaround, no waiting</li>
+      </ul>
+      <a href="https://whop.com/vibral-studio/custom-growth-blueprint/?ref=related_products&funnelId=product_3b7ff935-ddd7-45ce-ae0f-daad122c1deb" class="btn btn-outline">Get My Custom Blueprint →</a>
+    </div>
+ 
+  </div>
+ 
+  <p style="text-align:center; font-size:13px; color:var(--text-muted); font-weight:300;">Not ready yet? Your <strong style="color:var(--gold);">free mini blueprint</strong> is right below 👇</p>
+</div>
+ 
 <!-- ── 01 — RULES ── -->
 <div class="page">
   <div class="page-number">01 — Mindset</div>
   <h2 class="section-title">THE RULES<br>OF THE GAME</h2>
   <p class="section-lead">The artists who blow up aren't the most talented. They're the ones who play by different rules. Here are the six that separate the ones who compound from the ones who plateau.</p>
-
+ 
   <div class="rules-grid">
     <div class="rule-card">
       <div class="rule-num">Rule 01</div>
@@ -713,18 +754,18 @@
       <p class="rule-body">The algorithm reads comment activity as a quality signal. A burst of replies in the first 60 minutes tells the platform this content is worth pushing further. The first hour is the most valuable window you have.</p>
     </div>
   </div>
-
+ 
   <div class="insight-block">
     <p><strong>The real unlock:</strong> Most artists treat every post like a standalone moment. The artists who compound treat every post as data. One video that performs tells you exactly what to make next — and the algorithm will push it harder because you're already in its system.</p>
   </div>
 </div>
-
+ 
 <!-- ── 02 — VIDEO CONCEPTS ── -->
 <div class="page">
   <div class="page-number">02 — Content</div>
   <h2 class="section-title">THE 6 VIDEO<br>CONCEPTS THAT<br>ALWAYS WORK.</h2>
   <p class="section-lead">These formats work across every genre. Adapt the energy, setting, and vibe to your universe — the structure stays the same. These are your rotating content pillars. Use them in rotation so you never run out of ideas.</p>
-
+ 
   <div class="concepts-list">
     <div class="concept-row">
       <div class="concept-num">01</div>
@@ -775,18 +816,18 @@
       <div class="concept-caption">"letting the internet decide" / overlay "coming soon"</div>
     </div>
   </div>
-
+ 
   <div class="insight-block">
     <p><strong>How to use this:</strong> Don't post the same concept twice in a row. Rotate between them. Each format attracts a different type of engagement — aesthetic gets saves, crowd reaction gets shares, studio BTS gets comments. <strong>Mix the formats, track which one your audience responds to most, then double down on that one.</strong></p>
   </div>
 </div>
-
+ 
 <!-- ── 03 — SPLIT TEST & RETENTION ── -->
 <div class="page">
   <div class="page-number">03 — Optimization</div>
   <h2 class="section-title">ONE VIDEO<br>IS NEVER<br>ONE VIDEO.</h2>
   <p class="section-lead">Every variable is a new ticket. Same footage, different caption, earlier cut, overlay removed — that's four posts. Multiply output without multiplying work. Then use the retention curve to know exactly what to fix.</p>
-
+ 
   <table class="split-table">
     <thead>
       <tr>
@@ -833,11 +874,11 @@
       </tr>
     </tbody>
   </table>
-
+ 
   <div style="margin-bottom: 16px;">
     <div class="brand-card-label" style="font-family:'Syne',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.2em; color:var(--gold); text-transform:uppercase; margin-bottom:24px;">Read Your Retention Curve — After Every Single Post</div>
   </div>
-
+ 
   <div class="curves-grid">
     <div class="curve-card good">
       <div class="curve-label good-label">✓ Good Video</div>
@@ -853,7 +894,7 @@
       <p class="curve-body">The algorithm reads this as quality and keeps pushing it.</p>
       <div class="curve-fix">→ Repost a variation immediately while it's hot.</div>
     </div>
-
+ 
     <div class="curve-card bad">
       <div class="curve-label bad-label">✗ Bad Video</div>
       <svg class="curve-svg" viewBox="0 0 260 80" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -868,7 +909,7 @@
       <p class="curve-body">The hook isn't working. People leave before they even see your content.</p>
       <div class="curve-fix">→ Cut the opening. Start at the best moment.</div>
     </div>
-
+ 
     <div class="curve-card bad">
       <div class="curve-label bad-label">✗ Bad Momentum</div>
       <svg class="curve-svg" viewBox="0 0 260 80" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -883,7 +924,7 @@
       <p class="curve-body">Starts okay but loses the viewer mid-way. Something in the middle is killing it.</p>
       <div class="curve-fix">→ Shorten it. Cut dead time. Add a second hook halfway.</div>
     </div>
-
+ 
     <div class="curve-card bad">
       <div class="curve-label bad-label">✗ Bad Explanation</div>
       <svg class="curve-svg" viewBox="0 0 260 80" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -899,18 +940,18 @@
       <div class="curve-fix">→ Find the exact second of the cliff. Cut that moment.</div>
     </div>
   </div>
-
+ 
   <div class="insight-block">
     <p><strong>After every post:</strong> Bad Video → fix the hook. Bad Momentum → shorten it. Bad Explanation → find the exact drop and cut it. Good Video → repost a variation immediately. <strong>The curve tells you exactly what to fix. No guessing, no opinions — just data.</strong></p>
   </div>
 </div>
-
+ 
 <!-- ── 04 — BRANDING ── -->
 <div class="page">
   <div class="page-number">04 — Identity</div>
   <h2 class="section-title">VIEWS GET<br>FORGOTTEN.<br>BRANDS DON'T.</h2>
   <p class="section-lead">Viral content brings views. Branding creates real fans — people who come to your shows, buy your merch, and want to be part of your world. That's the difference between a spike and a career.</p>
-
+ 
   <div class="branding-grid">
     <div class="brand-card">
       <div class="brand-card-label">Your Visual World</div>
@@ -928,7 +969,7 @@
       <p class="brand-card-body">Say what your fans would say in a group chat. No generic lyrics, no empty hype lines. Direct, self-aware, specific. The caption is the second hook — it decides if they save, share, or scroll past.</p>
     </div>
   </div>
-
+ 
   <div style="display:grid; grid-template-columns:1fr 1fr; gap:2px; margin-bottom:40px;">
     <div style="background:var(--black2); border:1px solid var(--grey); padding:32px;">
       <div class="brand-card-label">Name Your Fanbase</div>
@@ -941,18 +982,18 @@
       <p class="brand-card-body">Repetition builds pattern recognition in both the algorithm and your audience. The accounts that compound pick one content format and run it for months. Variation kills early growth. Commit to the format, let it compound, then expand.</p>
     </div>
   </div>
-
+ 
   <div class="insight-block">
     <p>The accounts that grow fast aren't posting more — they're posting with more <strong>intention</strong>. Every post should make the viewer feel like they missed something worth being part of. Build a world, not a feed.</p>
   </div>
 </div>
-
+ 
 <!-- ── 05 — MANYCHAT ── -->
 <div class="page">
   <div class="page-number">05 — Automation</div>
   <h2 class="section-title">THE PRESAVE<br>SYSTEM THAT<br>RUNS ITSELF.</h2>
   <p class="section-lead">ManyChat turns every comment into an automatic DM — and every DM into a presave, a stream, or a fan. Here's the exact setup independent artists use to build a presave list while the algorithm pushes their content further at the same time.</p>
-
+ 
   <div class="manychat-steps">
     <div class="mc-step">
       <div class="mc-step-num">1</div>
@@ -990,22 +1031,22 @@
       </div>
     </div>
   </div>
-
+ 
   <div class="insight-block">
     <p><strong>Why this matters:</strong> More presaves = more day 1 streams = better Spotify placement = more organic discovery. Every comment is simultaneously a reach signal to the algorithm AND a fan entering your funnel. <strong>Most artists are leaving both on the table by not having this setup.</strong></p>
   </div>
 </div>
-
+ 
 <!-- ── UPSELL ── -->
 <div class="upsell-page">
   <div class="upsell-eyebrow">Ready to go further?</div>
   <h2 class="upsell-headline">THIS WAS<br>THE <span>FREE</span> VERSION.</h2>
   <p class="upsell-sub">The full system is 20× more detailed. Updated every week with what's actually working right now — not last quarter. Built for artists who are serious about the next level.</p>
-
+ 
   <div class="products-grid">
     <div class="product-card featured">
-      <div class="product-badge">Most Popular</div>
       <div class="product-label">Monthly Subscription</div>
+      <div class="product-badge">Most Popular</div>
       <div class="product-name">Viral Growth<br>Blueprint</div>
       <div style="font-family:'Syne',sans-serif; font-size:16px; font-weight:600; color:var(--text-muted); text-decoration:line-through; margin-bottom:4px;">$79</div>
       <div class="product-price">$49</div>
@@ -1020,7 +1061,7 @@
       </ul>
       <a href="https://whop.com/vibral-studio/the-viral-growth-blueprint/?ref=related_products&funnelId=product_3b7ff935-ddd7-45ce-ae0f-daad122c1deb" class="btn btn-gold">Get the Full Blueprint →</a>
     </div>
-
+ 
     <div class="product-card">
       <div class="product-label">One-Time · Done For You</div>
       <div class="product-name">Custom Growth<br>Blueprint</div>
@@ -1038,12 +1079,13 @@
       <a href="https://whop.com/vibral-studio/custom-growth-blueprint/?ref=related_products&funnelId=product_3b7ff935-ddd7-45ce-ae0f-daad122c1deb" class="btn btn-outline">Get My Custom Blueprint →</a>
     </div>
   </div>
-
+ 
   <div class="upsell-closer">
     <p>Questions? <a href="mailto:contact@vibralstudio.com">contact@vibralstudio.com</a></p>
     <p style="margin-top:8px;">Vibral Studio · The system behind 60M+ organic views.</p>
   </div>
 </div>
-
+ 
 </body>
 </html>
+ 
