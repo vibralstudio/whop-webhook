@@ -10,7 +10,7 @@ const { renderTemplate }         = require('./lib/render-template');
 const { generatePDF }            = require('./lib/generate-pdf');
 const { sendBlueprintEmail }     = require('./lib/send-blueprint-email');
 
-const { addSubscriber, getSubscriberByToken, getAllSubscribers, getActiveCount } = require('./lib/vgb-store');
+const { addSubscriber, getSubscriberByToken, getAllSubscribers, getActiveCount, deactivateSubscriber } = require('./lib/vgb-store');
 const { getPublished, getDraft, saveDraft, publishDraft, publishDirect }        = require('./lib/vgb-content-store');
 const { sendVGBAccessEmail, sendApprovalEmail }                                 = require('./lib/vgb-email');
 const { renderVGBPage }                                                          = require('./lib/render-vgb');
@@ -65,7 +65,10 @@ app.post('/webhook', (req, res) => {
   try { payload = JSON.parse(req.body); }
   catch { return; }
 
-  const { action, data } = payload;
+  // Whop sends the event name as "type" (e.g. "membership.activated"),
+  // not "action" — keep both for safety in case Whop changes the field name.
+  const action = payload.type ?? payload.action;
+  const data   = payload.data;
 
   logger.info('WHOP EVENT', { action, raw: JSON.stringify(payload).slice(0, 2000) });
 
@@ -95,6 +98,17 @@ app.post('/webhook', (req, res) => {
   }
 
   const isVGB = product.toLowerCase().includes('viral growth blueprint') || product === VGB_PRODUCT;
+
+  // Membership cancelled/deactivated → mark subscriber inactive, no email sent
+  if (action === 'membership.deactivated' || action === 'membership.cancelled') {
+    if (isVGB) {
+      deactivateSubscriber(email).catch(err =>
+        logger.error('deactivateSubscriber failed', { email, error: err.message })
+      );
+      logger.info('VGB subscriber deactivated', { email });
+    }
+    return;
+  }
 
   if (isVGB) {
     handleVGBPurchase(email, product).catch(err =>
