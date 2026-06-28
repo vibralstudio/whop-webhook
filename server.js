@@ -265,8 +265,11 @@ async function runBlueprintPipeline(responseToken) {
     const blueprintJson = await generateBlueprint(answers);
     const blueprintHtml = renderTemplate(blueprintJson);
     const pdfBuffer     = await generatePDF(blueprintHtml);
-    await sendBlueprintEmail(email, pdfBuffer);
-    logger.info('Pipeline complete', { token: responseToken, email, ms: Date.now() - start });
+
+    // Send to admin for approval — NOT to the client
+    await sendBlueprintEmail(ADMIN_EMAIL, pdfBuffer, `[APPROVAL NEEDED] Custom Blueprint for ${email}`);
+
+    logger.info('Pipeline complete — sent for approval', { token: responseToken, clientEmail: email, ms: Date.now() - start });
   } catch (err) {
     logger.error('Pipeline failed', { token: responseToken, error: err.message });
   }
