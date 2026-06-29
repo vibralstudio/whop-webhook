@@ -21,8 +21,8 @@
   .doc-body{width:794px;margin:0 auto;padding:0 80px;position:relative;}
   .doc-body::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold),var(--gold-light),var(--gold),transparent);}
 
-  .section{padding:56px 0;page-break-inside:auto;}
-  .section:first-child{padding-top:72px;}
+  .section{padding:44px 0;page-break-inside:auto;}
+  .section:first-child{padding-top:60px;}
   /* Force a clean break before each major section so a heading never starts at the bottom of a page */
   .section.section-break{page-break-before:always;break-before:page;padding-top:72px;}
 
@@ -40,7 +40,7 @@
   .cover-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:400;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;margin-bottom:36px;}
   .cover-bar{width:44px;height:2px;background:var(--gold);margin-bottom:28px;}
   .cover-pills{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px;}
-  .cover-pill{background:var(--gold-dim);border:1px solid var(--border);border-radius:3px;padding:6px 14px;font-family:'Syne',sans-serif;font-size:10px;letter-spacing:.1em;color:var(--gold);text-transform:uppercase;}
+  .cover-pill{background:var(--gold-dim);border:1px solid var(--border);border-radius:3px;padding:6px 14px;font-family:'Syne',sans-serif;font-size:10px;letter-spacing:.1em;color:var(--gold);text-transform:uppercase;white-space:nowrap;}
   .cover-quote{font-size:15px;color:var(--grey-light);font-style:italic;font-weight:300;border-left:2px solid var(--gold);padding-left:18px;max-width:420px;line-height:1.6;}
   .cover-bottom{display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid var(--border);padding-top:20px;}
   .cover-date{font-family:'Syne',sans-serif;font-size:10px;color:var(--grey);letter-spacing:.15em;text-transform:uppercase;}
@@ -50,13 +50,13 @@
   .section-title{font-family:'Syne',sans-serif;font-size:38px;font-weight:800;line-height:1;text-transform:uppercase;margin-bottom:8px;page-break-after:avoid;break-after:avoid;}
   .section-title .gold{color:var(--gold);}
   .lead{font-size:15px;color:var(--grey-light);font-weight:300;max-width:520px;line-height:1.7;margin-bottom:40px;border-left:2px solid var(--gold);padding-left:18px;page-break-inside:avoid;break-inside:avoid;}
-  h3{font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:.25em;color:var(--gold);text-transform:uppercase;margin:36px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--border);page-break-after:avoid;}
+  h3{font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:.25em;color:var(--gold);text-transform:uppercase;margin:16px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--border);page-break-after:avoid;}
   h3:first-of-type{margin-top:0;}
-  p{color:var(--grey-light);font-size:13.5px;line-height:1.82;margin-bottom:14px;font-weight:300;orphans:3;widows:3;}
+  p{color:var(--grey-light);font-size:13.5px;line-height:1.82;margin-bottom:14px;font-weight:300;orphans:3;widows:3;page-break-inside:avoid;break-inside:avoid;}
   p strong{color:var(--white);font-weight:500;}
 
   /* CARDS — never split across a page break */
-  .card{background:var(--black2);border:1px solid var(--border);border-radius:5px;padding:22px 26px;margin-bottom:12px;page-break-inside:avoid;break-inside:avoid;}
+  .card{background:var(--black2);border:1px solid var(--border);border-radius:5px;padding:10px 18px;margin-bottom:8px;page-break-inside:avoid;break-inside:avoid;}
   .card-label{font-family:'Syne',sans-serif;font-size:9px;letter-spacing:.2em;color:var(--gold);margin-bottom:7px;text-transform:uppercase;}
   .card-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--white);margin-bottom:8px;}
   .card-body{font-size:13px;color:var(--grey);line-height:1.72;font-weight:300;}
@@ -73,14 +73,14 @@
   /* TABLE */
   .split-table{width:100%;border-collapse:collapse;margin-top:8px;page-break-inside:auto;}
   .split-table tr{page-break-inside:avoid;break-inside:avoid;}
-  .split-table th{font-family:'Syne',sans-serif;font-size:9px;letter-spacing:.15em;color:var(--gold);text-transform:uppercase;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);}
-  .split-table td{font-size:12.5px;color:var(--grey-light);padding:11px 14px;border-bottom:1px solid rgba(201,168,76,.07);font-weight:300;vertical-align:top;}
+  .split-table th{font-family:'Syne',sans-serif;font-size:9px;letter-spacing:.15em;color:var(--gold);text-transform:uppercase;padding:7px 14px;text-align:left;border-bottom:1px solid var(--border);}
+  .split-table td{font-size:12.5px;color:var(--grey-light);padding:5px 14px;border-bottom:1px solid rgba(201,168,76,.07);font-weight:300;vertical-align:top;}
   .split-table td:first-child{color:var(--white);font-weight:500;}
   .impact{display:inline-block;font-family:'Syne',sans-serif;font-size:9px;color:var(--gold);background:var(--gold-dim);border-radius:3px;padding:2px 7px;}
 
   /* IDENTITY */
-  .id-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;}
-  .id-item{background:var(--black2);border:1px solid var(--border);border-radius:5px;padding:16px 20px;page-break-inside:avoid;break-inside:avoid;}
+  .id-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+  .id-item{background:var(--black2);border:1px solid var(--border);border-radius:5px;padding:10px 16px;page-break-inside:avoid;break-inside:avoid;}
   .id-label{font-family:'Syne',sans-serif;font-size:9px;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;margin-bottom:5px;}
   .id-val{font-size:13px;color:var(--white);font-weight:400;line-height:1.55;}
 
@@ -91,9 +91,11 @@
   .stat-l{font-size:10px;color:var(--grey);font-weight:300;}
 
   /* INSIGHT */
-  .insight{background:var(--gold-dim);border-left:3px solid var(--gold);border-radius:0 5px 5px 0;padding:16px 20px;margin:20px 0;}
+  .insight{background:var(--gold-dim);border-left:3px solid var(--gold);border-radius:0 5px 5px 0;padding:10px 18px;margin:10px 0;page-break-inside:avoid;break-inside:avoid;}
+  .insight-wrap{page-break-inside:avoid;break-inside:avoid;}
+  .insight-spacer{font-family:'Syne',sans-serif;font-size:9px;letter-spacing:.2em;color:var(--border);text-transform:uppercase;margin-bottom:32px;height:9px;}
   .insight-l{font-family:'Syne',sans-serif;font-size:9px;letter-spacing:.25em;color:var(--gold);text-transform:uppercase;margin-bottom:6px;}
-  .insight p{font-size:13px;color:var(--white);margin:0;font-weight:400;line-height:1.65;}
+  .insight p{font-size:13px;color:var(--white);margin:0;font-weight:400;line-height:1.5;}
 
   /* NUMBERED */
   .num-list{list-style:none;counter-reset:items;}
@@ -103,7 +105,7 @@
   .num-list li .it strong{color:var(--white);font-weight:600;display:block;margin-bottom:3px;font-family:'Syne',sans-serif;font-size:12px;}
 
   /* PROMPT */
-  .prompt{background:#0c0c0a;border:1px solid var(--border);border-radius:5px;padding:16px 20px;margin:14px 0;font-family:'Courier New',monospace;font-size:11.5px;color:#98aa8c;line-height:1.75;position:relative;}
+  .prompt{background:#0c0c0a;border:1px solid var(--border);border-radius:5px;padding:16px 20px;margin:48px 0 14px;font-family:'Courier New',monospace;font-size:11.5px;color:#98aa8c;line-height:1.75;position:relative;page-break-inside:avoid;break-inside:avoid;}
   .prompt::before{content:'HIGGSFIELD PROMPT';position:absolute;top:-1px;right:12px;background:var(--gold);color:var(--black);font-family:'Syne',sans-serif;font-size:8px;font-weight:700;letter-spacing:.1em;padding:2px 7px;border-radius:0 0 3px 3px;}
 
   /* CAPTIONS */
@@ -147,9 +149,11 @@
 
   <!-- WHO YOU ARE -->
   <div class="section">
-    <div class="eyebrow">01 — Identity</div>
-    <h1 class="section-title">Who You<br><span class="gold">Are</span></h1>
-    <p class="lead">Everything in this blueprint is built around who you are as an artist and who your fans are as people. Before strategy comes identity.</p>
+    <div style="page-break-inside:avoid;break-inside:avoid;">
+      <div class="eyebrow">01 — Identity</div>
+      <h1 class="section-title">Who You<br><span class="gold">Are</span></h1>
+      <p class="lead">Everything in this blueprint is built around who you are as an artist and who your fans are as people. Before strategy comes identity.</p>
+    </div>
 
     <!-- ARTIST:who-you-are -->
     <div class="id-grid">
@@ -164,11 +168,10 @@
     <h3>The Drifters — Your Fanbase</h3>
     <p>25 years old. Festival weekends. Minimal streetwear. Believes music is the closest thing to a spiritual experience. <strong>Values freedom over security.</strong> Always moving, always searching, never settling.</p>
 
-    <div class="two-col" style="margin-top:16px;">
+    <div class="two-col" style="margin-top:8px;">
       <div class="card"><div class="card-label">They want to become</div><div class="card-body">Someone who lives fully — traveling, free, doing work that matters. The version of themselves that chose the life they actually wanted.</div></div>
       <div class="card"><div class="card-label">They fight against</div><div class="card-body">The routine. Corporate culture. Settling. People who stopped dreaming.</div></div>
     </div>
-
     <div class="insight">
       <div class="insight-l">If Someone Criticized Your Music</div>
       <p>"You just don't feel it yet. This isn't background music — it takes you somewhere. Give it one real listen."</p>
@@ -178,8 +181,10 @@
 
   <!-- WHERE YOU STAND -->
   <div class="section">
-    <div class="eyebrow">02 — Current State</div>
-    <h1 class="section-title">Where You<br><span class="gold">Stand</span></h1>
+    <div style="page-break-inside:avoid;break-inside:avoid;">
+      <div class="eyebrow">02 — Current State</div>
+      <h1 class="section-title">Where You<br><span class="gold">Stand</span></h1>
+    </div>
     <!-- ARTIST:where-you-stand -->
     <p class="lead">Seven tracks in. 2M organic streams with zero paid promotion. The music is connecting. The problem has never been the art — it's that the content volume hasn't matched it.</p>
 
@@ -203,7 +208,7 @@
   </div>
 
   <!-- RULES OF THE GAME -->
-  <div class="section">
+  <div class="section section-break">
     <div class="eyebrow">03 — Mindset</div>
     <h1 class="section-title">The Rules<br><span class="gold">of the Game</span></h1>
     <p class="lead">The artists who blow up aren't the most talented. They're the ones who play by different rules.</p>
@@ -244,9 +249,11 @@
 
   <!-- 6 VIDEO CONCEPTS -->
   <div class="section">
-    <div class="eyebrow">04 — Content</div>
-    <h1 class="section-title">Your 6 Video<br><span class="gold">Concepts</span></h1>
-    <p class="lead">These formats are adapted to your universe — dark, cinematic, no talking head required. Use them as your rotating content pillars.</p>
+    <div style="page-break-inside:avoid;break-inside:avoid;">
+      <div class="eyebrow">04 — Content</div>
+      <h1 class="section-title">Your 6 Video<br><span class="gold">Concepts</span></h1>
+      <p class="lead">These formats are adapted to your universe — dark, cinematic, no talking head required. Use them as your rotating content pillars.</p>
+    </div>
 
     <!-- ARTIST:video-concepts -->
     <div class="concept">
@@ -307,9 +314,11 @@
 
   <!-- SPLIT TEST -->
   <div class="section">
-    <div class="eyebrow">05 — Optimization</div>
-    <h1 class="section-title">Split Test &<br><span class="gold">Audio Strategy</span></h1>
-    <p class="lead">One video is never just one video. Every variable is a new ticket. The same footage can be reused multiple times — different caption, hook cut earlier, overlay added or removed.</p>
+    <div style="page-break-inside:avoid;break-inside:avoid;">
+      <div class="eyebrow">05 — Optimization</div>
+      <h1 class="section-title">Split Test &<br><span class="gold">Audio Strategy</span></h1>
+      <p class="lead" style="margin-bottom:24px;">One video is never just one video. Every variable is a new ticket. The same footage can be reused multiple times — different caption, hook cut earlier, overlay added or removed.</p>
+    </div>
 
     <!-- ARTIST:split-test -->
     <table class="split-table">
@@ -339,69 +348,71 @@
 
   <!-- RETENTION CURVES -->
   <div class="section">
-    <div class="eyebrow">Reading Your Curves</div>
-    <h1 class="section-title">Video<br><span class="gold">Retention Curves</span></h1>
-    <p class="lead">Your Instagram analytics show how people watch your videos. These 4 curves tell you exactly what to fix — and what to keep doing.</p>
+    <div style="page-break-inside:avoid;break-inside:avoid;">
+      <div class="eyebrow">Reading Your Curves</div>
+      <h1 class="section-title" style="font-size:30px;">Video <span class="gold">Retention Curves</span></h1>
+      <p class="lead" style="margin-bottom:16px;font-size:13px;">Your Instagram analytics show how people watch your videos. These 4 curves tell you exactly what to fix.</p>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:8px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
 
-      <div style="background:var(--black2);border:1px solid var(--border);border-radius:5px;padding:20px;page-break-inside:avoid;break-inside:avoid;">
-        <svg viewBox="0 0 260 120" width="100%" style="display:block;margin-bottom:12px;">
-          <line x1="30" y1="10" x2="30" y2="95" stroke="#555" stroke-width="0.8"/>
-          <line x1="30" y1="95" x2="250" y2="95" stroke="#555" stroke-width="0.8"/>
-          <text x="24" y="14" fill="#888" font-size="9" text-anchor="end" font-family="sans-serif">100%</text>
-          <text x="24" y="57" fill="#888" font-size="9" text-anchor="end" font-family="sans-serif">50%</text>
-          <text x="24" y="98" fill="#888" font-size="9" text-anchor="end" font-family="sans-serif">0</text>
-          <path d="M30,12 C60,14 100,20 140,32 C180,44 210,52 250,62" fill="none" stroke="#C9A84C" stroke-width="2.5" stroke-linecap="round"/>
-        </svg>
-        <div style="font-family:'Syne',sans-serif;font-size:11px;letter-spacing:.15em;color:var(--gold);text-transform:uppercase;margin-bottom:6px;">Good Video ✓</div>
-        <div style="font-size:12px;color:var(--grey);line-height:1.65;font-weight:300;">Gradual drop, stays above 50%. The algorithm reads this as quality content and keeps pushing it.</div>
+        <div style="background:var(--black2);border:1px solid var(--border);border-radius:5px;padding:14px;">
+          <svg viewBox="0 0 260 90" width="100%" style="display:block;margin-bottom:8px;">
+            <line x1="30" y1="8" x2="30" y2="72" stroke="#555" stroke-width="0.8"/>
+            <line x1="30" y1="72" x2="250" y2="72" stroke="#555" stroke-width="0.8"/>
+            <text x="24" y="12" fill="#888" font-size="9" text-anchor="end" font-family="sans-serif">100%</text>
+            <text x="24" y="42" fill="#888" font-size="9" text-anchor="end" font-family="sans-serif">50%</text>
+            <text x="24" y="75" fill="#888" font-size="9" text-anchor="end" font-family="sans-serif">0</text>
+            <path d="M30,10 C60,12 100,16 140,26 C180,36 210,42 250,50" fill="none" stroke="#C9A84C" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+          <div style="font-family:'Syne',sans-serif;font-size:10px;letter-spacing:.15em;color:var(--gold);text-transform:uppercase;margin-bottom:4px;">Good Video ✓</div>
+          <div style="font-size:11px;color:var(--grey);line-height:1.5;font-weight:300;">Gradual drop, stays above 50%. Algorithm keeps pushing it.</div>
+        </div>
+
+        <div style="background:var(--black2);border:1px solid var(--border);border-radius:5px;padding:14px;">
+          <svg viewBox="0 0 260 90" width="100%" style="display:block;margin-bottom:8px;">
+            <line x1="30" y1="8" x2="30" y2="72" stroke="#555" stroke-width="0.8"/>
+            <line x1="30" y1="72" x2="250" y2="72" stroke="#555" stroke-width="0.8"/>
+            <text x="24" y="12" fill="#888" font-size="9" text-anchor="end" font-family="sans-serif">100%</text>
+            <text x="24" y="42" fill="#888" font-size="9" text-anchor="end" font-family="sans-serif">50%</text>
+            <text x="24" y="75" fill="#888" font-size="9" text-anchor="end" font-family="sans-serif">0</text>
+            <path d="M30,10 C40,12 50,24 65,52 C75,64 90,68 250,70" fill="none" stroke="#C9A84C" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+          <div style="font-family:'Syne',sans-serif;font-size:10px;letter-spacing:.15em;color:#e05555;text-transform:uppercase;margin-bottom:4px;">Bad Video ✗</div>
+          <div style="font-size:11px;color:var(--grey);line-height:1.5;font-weight:300;">Drops to zero in 3 seconds. Fix: cut the opening, start at the best moment.</div>
+        </div>
+
+        <div style="background:var(--black2);border:1px solid var(--border);border-radius:5px;padding:14px;">
+          <svg viewBox="0 0 260 90" width="100%" style="display:block;margin-bottom:8px;">
+            <line x1="30" y1="8" x2="30" y2="72" stroke="#555" stroke-width="0.8"/>
+            <line x1="30" y1="72" x2="250" y2="72" stroke="#555" stroke-width="0.8"/>
+            <text x="24" y="12" fill="#888" font-size="9" text-anchor="end" font-family="sans-serif">100%</text>
+            <text x="24" y="42" fill="#888" font-size="9" text-anchor="end" font-family="sans-serif">50%</text>
+            <text x="24" y="75" fill="#888" font-size="9" text-anchor="end" font-family="sans-serif">0</text>
+            <path d="M30,10 C50,12 80,15 100,18 C120,22 140,38 165,54 C185,66 210,68 250,69" fill="none" stroke="#C9A84C" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+          <div style="font-family:'Syne',sans-serif;font-size:10px;letter-spacing:.15em;color:#e05555;text-transform:uppercase;margin-bottom:4px;">Bad Momentum ✗</div>
+          <div style="font-size:11px;color:var(--grey);line-height:1.5;font-weight:300;">Steady decline. Fix: shorten the video, cut dead time.</div>
+        </div>
+
+        <div style="background:var(--black2);border:1px solid var(--border);border-radius:5px;padding:14px;">
+          <svg viewBox="0 0 260 90" width="100%" style="display:block;margin-bottom:8px;">
+            <line x1="30" y1="8" x2="30" y2="72" stroke="#555" stroke-width="0.8"/>
+            <line x1="30" y1="72" x2="250" y2="72" stroke="#555" stroke-width="0.8"/>
+            <text x="24" y="12" fill="#888" font-size="9" text-anchor="end" font-family="sans-serif">100%</text>
+            <text x="24" y="42" fill="#888" font-size="9" text-anchor="end" font-family="sans-serif">50%</text>
+            <text x="24" y="75" fill="#888" font-size="9" text-anchor="end" font-family="sans-serif">0</text>
+            <path d="M30,10 C50,11 80,14 110,16 C130,18 145,22 155,42 C165,54 175,56 250,57" fill="none" stroke="#C9A84C" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+          <div style="font-family:'Syne',sans-serif;font-size:10px;letter-spacing:.15em;color:#e05555;text-transform:uppercase;margin-bottom:4px;">Bad Explanation ✗</div>
+          <div style="font-size:11px;color:var(--grey);line-height:1.5;font-weight:300;">Cliff drop at a point. Pinpoint and cut that moment.</div>
+        </div>
+
       </div>
-
-      <div style="background:var(--black2);border:1px solid var(--border);border-radius:5px;padding:20px;page-break-inside:avoid;break-inside:avoid;">
-        <svg viewBox="0 0 260 120" width="100%" style="display:block;margin-bottom:12px;">
-          <line x1="30" y1="10" x2="30" y2="95" stroke="#555" stroke-width="0.8"/>
-          <line x1="30" y1="95" x2="250" y2="95" stroke="#555" stroke-width="0.8"/>
-          <text x="24" y="14" fill="#888" font-size="9" text-anchor="end" font-family="sans-serif">100%</text>
-          <text x="24" y="57" fill="#888" font-size="9" text-anchor="end" font-family="sans-serif">50%</text>
-          <text x="24" y="98" fill="#888" font-size="9" text-anchor="end" font-family="sans-serif">0</text>
-          <path d="M30,12 C40,14 50,30 65,70 C75,85 90,90 250,93" fill="none" stroke="#C9A84C" stroke-width="2.5" stroke-linecap="round"/>
-        </svg>
-        <div style="font-family:'Syne',sans-serif;font-size:11px;letter-spacing:.15em;color:#e05555;text-transform:uppercase;margin-bottom:6px;">Bad Video ✗</div>
-        <div style="font-size:12px;color:var(--grey);line-height:1.65;font-weight:300;">Drops to zero in the first 3 seconds. The hook isn't working. Fix: cut the opening, start at the best moment.</div>
-      </div>
-
-      <div style="background:var(--black2);border:1px solid var(--border);border-radius:5px;padding:20px;page-break-inside:avoid;break-inside:avoid;">
-        <svg viewBox="0 0 260 120" width="100%" style="display:block;margin-bottom:12px;">
-          <line x1="30" y1="10" x2="30" y2="95" stroke="#555" stroke-width="0.8"/>
-          <line x1="30" y1="95" x2="250" y2="95" stroke="#555" stroke-width="0.8"/>
-          <text x="24" y="14" fill="#888" font-size="9" text-anchor="end" font-family="sans-serif">100%</text>
-          <text x="24" y="57" fill="#888" font-size="9" text-anchor="end" font-family="sans-serif">50%</text>
-          <text x="24" y="98" fill="#888" font-size="9" text-anchor="end" font-family="sans-serif">0</text>
-          <path d="M30,12 C50,14 80,18 100,22 C120,28 140,50 165,72 C185,88 210,92 250,93" fill="none" stroke="#C9A84C" stroke-width="2.5" stroke-linecap="round"/>
-        </svg>
-        <div style="font-family:'Syne',sans-serif;font-size:11px;letter-spacing:.15em;color:#e05555;text-transform:uppercase;margin-bottom:6px;">Bad Momentum ✗</div>
-        <div style="font-size:12px;color:var(--grey);line-height:1.65;font-weight:300;">Steady decline throughout. Fix: shorten the video, cut dead time, or add a second hook at the halfway point.</div>
-      </div>
-
-      <div style="background:var(--black2);border:1px solid var(--border);border-radius:5px;padding:20px;page-break-inside:avoid;break-inside:avoid;">
-        <svg viewBox="0 0 260 120" width="100%" style="display:block;margin-bottom:12px;">
-          <line x1="30" y1="10" x2="30" y2="95" stroke="#555" stroke-width="0.8"/>
-          <line x1="30" y1="95" x2="250" y2="95" stroke="#555" stroke-width="0.8"/>
-          <text x="24" y="14" fill="#888" font-size="9" text-anchor="end" font-family="sans-serif">100%</text>
-          <text x="24" y="57" fill="#888" font-size="9" text-anchor="end" font-family="sans-serif">50%</text>
-          <text x="24" y="98" fill="#888" font-size="9" text-anchor="end" font-family="sans-serif">0</text>
-          <path d="M30,12 C50,13 80,16 110,20 C130,23 145,28 155,52 C165,68 175,70 250,72" fill="none" stroke="#C9A84C" stroke-width="2.5" stroke-linecap="round"/>
-        </svg>
-        <div style="font-family:'Syne',sans-serif;font-size:11px;letter-spacing:.15em;color:#e05555;text-transform:uppercase;margin-bottom:6px;">Bad Explanation ✗</div>
-        <div style="font-size:12px;color:var(--grey);line-height:1.65;font-weight:300;">Cliff drop at a specific point. Pinpoint exactly where the drop happens and cut that moment.</div>
-      </div>
-
     </div>
   </div>
 
   <!-- CAPTION BANK -->
-  <div class="section">
+  <div class="section section-break">
     <div class="eyebrow">09 — Resources</div>
     <h1 class="section-title">Your Caption<br><span class="gold">Bank</span></h1>
     <p class="lead">Every caption here is built around your sound, your world, and the feeling your music creates. Test at least 2 styles on every clip.</p>
@@ -456,7 +467,7 @@
   </div>
 
   <!-- BRANDING + NEXT STEPS -->
-  <div class="section">
+  <div class="section section-break">
     <div class="eyebrow">10 — Branding & Action</div>
     <h1 class="section-title">Build Your<br><span class="gold">Universe</span></h1>
     <p class="lead">Viral content brings views. Branding creates real fans — people who come to your shows, buy your merch, and want to be part of your community.</p>
