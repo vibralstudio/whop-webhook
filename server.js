@@ -290,6 +290,28 @@ process.on('SIGINT',  () => shutdown('SIGINT'));
 
 // ── Start ─────────────────────────────────────────────────────────────────────
 
+
+// ============ TYPEFORM WEBHOOK — Pipeline v2 (Standard FENNO.) ============
+app.post('/typeform-webhook', express.json({ limit: '2mb' }), (req, res) => {
+  res.status(200).json({ received: true });
+  try {
+    const raw = (typeof req.body === 'string' || Buffer.isBuffer(req.body))
+      ? req.body.toString()
+      : JSON.stringify(req.body);
+    fs.writeFileSync('/tmp/answers.json', raw);
+    const { execFile } = require('child_process');
+    execFile('python3', ['generate_blueprint.py', '/tmp/answers.json'],
+      { cwd: __dirname, timeout: 600000 },
+      (err, stdout, stderr) => {
+        logger.info('PIPELINE V2', { out: (stdout || '').slice(0, 2000) });
+        if (err) logger.error('PIPELINE V2 FAILED', { error: (stderr || err.message).slice(0, 2000) });
+      });
+    logger.info('Typeform submission received - pipeline v2 started');
+  } catch (e) {
+    logger.error('typeform-webhook error', { error: e.message });
+  }
+});
+
 app.listen(config.port, () => {
   logger.info('Server started', { port: config.port });
   if (!config.whopWebhookSecret) logger.warn('WHOP_WEBHOOK_SECRET not set');
