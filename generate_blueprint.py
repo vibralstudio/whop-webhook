@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 """
-generate_blueprint.py — Vibral Studio · Custom Blueprint pipeline v2 (Standard FENNO.)
+generate_blueprint.py — Vibral Studio · Custom Blueprint pipeline v3 (Strategist Standard)
 
 Full flow, self-contained:
-  Typeform answers (JSON) → Anthropic generation (15 sections, Fenno standard)
+  Typeform answers (JSON) → Anthropic generation (16 sections, strategist standard)
   → continuous exact-height PDF → approval email to contact@vibralstudio.com.
+
+v3 change: the quality gate no longer only checks that sections exist. It also
+checks that the document does strategic work — a diagnosis, disagreements with
+the client, supplied references, a written bio. A blueprint that merely reflects
+the client's own answers back at them is blocked before it reaches approval.
 
 Usage:
     python3 generate_blueprint.py <answers.json> [client_name] [client_email]
@@ -99,7 +104,8 @@ def generate_body(qa_pairs, client_name):
         f"CLIENT ARTIST NAME: {client_name}\n"
         f"TODAY'S DATE: {datetime.now().strftime('%B %d, %Y')}\n\n"
         f"CLIENT'S TYPEFORM ANSWERS ({len(qa_pairs)} questions):\n\n{answers_block}\n\n"
-        f"Generate the complete blueprint HTML body now."
+        f"Generate the complete blueprint HTML body now. Remember: their answers are "
+        f"raw evidence, not conclusions. Diagnose, decide, and disagree where warranted."
     )
     client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
     resp = client.messages.create(
@@ -115,12 +121,20 @@ def generate_body(qa_pairs, client_name):
 
 
 def quality_check(body):
-    """Hard gate — never let an incomplete blueprint reach approval (leçon Kemkila)."""
+    """Hard gate v3 — blocks mirror blueprints AND incomplete ones.
+
+    v2 checked that sections existed (leçon Kemkila). v3 also checks that the
+    document does strategic work (leçon Rayma): a diagnosis, disagreements,
+    supplied references, a written bio. A blueprint that merely reflects the
+    client's answers back at them is not worth $500 and must not reach approval.
+    """
     problems = []
+
+    # --- structural completeness (v2 rules, kept) ---
     caps = len(re.findall(r'<div class="cap">', body))
-    # 65 captions + up to ~6 stat labels also use .cap
     if caps < 65:
         problems.append(f"captions insuffisantes ({caps} < 65)")
+
     for marker, label in [
         ("cover", "cover"), ('class="phase"', "plan 90 jours"),
         ("lyrc.studio", "section LYRC"), ("VIBRAL", "code VIBRAL"),
@@ -130,9 +144,43 @@ def quality_check(body):
     ]:
         if marker.lower() not in body.lower():
             problems.append(f"section manquante: {label}")
+
     sections = body.count("<section")
-    if sections < 14:
-        problems.append(f"sections insuffisantes ({sections} < 14)")
+    if sections < 15:
+        problems.append(f"sections insuffisantes ({sections} < 15, diagnostic inclus)")
+
+    # --- v3: strategist rules ---
+    low = body.lower()
+
+    # 1. The Diagnosis section must open the document
+    if "00 — diagnosis" not in low and "00 — diagnostic" not in low:
+        problems.append("SECTION 00 DIAGNOSTIC MANQUANTE (le coeur du produit v3)")
+
+    # 2. A thesis the client did not state
+    if "the thesis" not in low and "la thèse" not in low:
+        problems.append("thèse stratégique manquante dans le diagnostic")
+
+    # 3. Explicit disagreement with the client
+    disagree_markers = [
+        "we cut", "we'd push back", "push back", "we disagree",
+        "you said no to", "we'd spend", "nous coupons", "on coupe",
+        "we're going to push back", "the disagreement", "le désaccord",
+    ]
+    if not any(m in low for m in disagree_markers):
+        problems.append("AUCUN DÉSACCORD avec le client (min. 1 requis — c'est un miroir)")
+
+    # 4. A named recommendation (fanbase name, symbol, direction)
+    if "recommended" not in low and "recommandé" not in low:
+        problems.append("aucune recommandation nommée (nom de fanbase / symbole)")
+
+    # 5. Bio written out, not described
+    if "copy this" not in low and "copie ceci" not in low and "your bio" not in low:
+        problems.append("BIO NON ÉCRITE (doit être livrée prête à copier)")
+
+    # 6. Visual references must be present as named entities
+    if "visual references" not in low and "références visuelles" not in low:
+        problems.append("références visuelles absentes")
+
     return problems
 
 
@@ -185,14 +233,14 @@ def main():
         client_email = (sys.argv[3] if len(sys.argv) > 3 and sys.argv[3] else auto_email) or "unknown"
         print(f"Client: {client_name} <{client_email}> — {len(qa_pairs)} answers")
 
-        print("Generating blueprint (Fenno standard)...")
+        print("Generating blueprint (strategist standard v3)...")
         body = generate_body(qa_pairs, client_name)
 
         problems = quality_check(body)
         if problems:
-            raise RuntimeError("QUALITY GATE FAILED — blueprint incomplet, envoi bloqué: "
+            raise RuntimeError("QUALITY GATE FAILED — envoi bloqué: "
                                + "; ".join(problems))
-        print("Quality gate: PASSED (15 sections, 65 captions, LYRC, Higgsfield, Trials)")
+        print("Quality gate: PASSED (16 sections, diagnostic, désaccords, bio écrite, 65 captions)")
 
         safe = re.sub(r"[^A-Za-z0-9]+", "-", client_name).strip("-") or "Client"
         pdf_path = f"/tmp/{safe}-Growth-Blueprint.pdf"
@@ -202,9 +250,11 @@ def main():
         send_email(
             subject=f"[APPROBATION] Custom Blueprint — {client_name}",
             text=(f"Blueprint genere pour {client_name} <{client_email}>.\n\n"
-                  f"Standard FENNO. — 15 sections, quality gate passe.\n"
-                  f"PDF continu en piece jointe. Ouvre-le dans ton navigateur, "
-                  f"approuve, puis transfere au client.\n\n— Pipeline Vibral v2"),
+                  f"Standard STRATEGE v3 — 16 sections, quality gate passe.\n"
+                  f"AVANT D'ENVOYER: lis la section 00 Diagnostic. Le gate verifie "
+                  f"qu'elle existe, pas qu'elle est bonne. Si le diagnostic est mou "
+                  f"ou si le doc repete les reponses du client, ne l'envoie pas.\n\n"
+                  f"PDF continu en piece jointe.\n\n— Pipeline Vibral v3"),
             pdf_path=pdf_path,
         )
         print("DONE — en attente d'approbation dans ta boite.")
@@ -212,7 +262,7 @@ def main():
         print(f"!!! PIPELINE FAILED !!!\n{e}")
         try:
             send_email(subject="[ALERTE] Custom Blueprint pipeline failed",
-                       text=f"Erreur pipeline v2:\n\n{e}\n\nFichier: {answers_path}")
+                       text=f"Erreur pipeline v3:\n\n{e}\n\nFichier: {answers_path}")
         except Exception as alert_err:
             print(f"Could not send failure alert: {alert_err}")
         sys.exit(1)
