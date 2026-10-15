@@ -15,6 +15,8 @@ const { getPublished, getDraft, saveDraft, publishDraft, publishDirect }        
 const { sendVGBAccessEmail, sendApprovalEmail }                                 = require('./lib/vgb-email');
 const { renderVGBPage }                                                          = require('./lib/render-vgb');
 const { renderAdminDashboard }                                                   = require('./lib/render-admin');
+const { customRouter, handleCustomPurchase, handleReleasePurchase, resumeInterrupted } = require('./lib/custom/routes');
+const { setSubscriberActive }                                                    = require('./lib/vgb-store');
 
 const fs   = require('fs');
 const path = require('path');
@@ -27,6 +29,10 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'vibral2026';
 const ADMIN_EMAIL    = process.env.ADMIN_EMAIL    || 'contact@vibralstudio.com';
 const VGB_PRODUCT    = process.env.VGB_PRODUCT_NAME || 'The Viral Growth Blueprint';
 const BASE_URL       = process.env.BASE_URL || 'https://whop-webhook-production.up.railway.app';
+
+// Custom Blueprint portal (/c/:token, /api/c/*, /start, /admin/custom). Mounted before the global
+// body parsers so its own size limits apply (uploads, large Blueprint edits).
+app.use(customRouter({ adminAuth }));
 
 app.use('/webhook', express.raw({ type: 'application/json' }));
 app.use(express.json());
@@ -99,6 +105,9 @@ app.post('/webhook', (req, res) => {
 
   const isVGB = product.toLowerCase().includes('viral growth blueprint') || product === VGB_PRODUCT;
 
+  // Activation/payment events (Whop can send several per purchase).
+  const isPurchase = /activated|went_valid|payment\.succeeded|invoice_paid|payment_succeeded/.test(String(action || ''));
+
   // Membership cancelled/deactivated → mark subscriber inactive, no email sent
   if (action === 'membership.deactivated' || action === 'membership.cancelled') {
     if (isVGB) {
@@ -114,9 +123,19 @@ app.post('/webhook', (req, res) => {
     handleVGBPurchase(email, product).catch(err =>
       logger.error('handleVGBPurchase failed', { email, error: err.message })
     );
+  } else if (!isPurchase) {
+    // Custom + release: only act on activation/payment events, VGB keeps its own dedupe above
+    logger.info('Event ignored (not a purchase)', { action, product });
+  } else if (product.toLowerCase().includes('release')) {
+    // "Next release" add-on ($100): +1 credit on the artist's Custom Blueprint
+    handleReleasePurchase(email).catch(err =>
+      logger.error('handleReleasePurchase failed', { email, error: err.message })
+    );
   } else if (product.toLowerCase().includes('custom')) {
-    sendTypeformEmail(email, product).catch(err =>
-      logger.error('sendTypeformEmail failed', { email, error: err.message })
+    // Custom Growth Blueprint: create the client and email their private intake link
+    const name = data?.user?.name ?? data?.user?.username ?? '';
+    handleCustomPurchase(email, name).catch(err =>
+      logger.error('handleCustomPurchase failed', { email, error: err.message })
     );
   } else {
     logger.info('Unknown product — skipping', { product });
@@ -163,6 +182,16 @@ app.get('/admin', adminAuth, async (req, res) => {
   const published   = await getPublished();
   const draft       = await getDraft();
   res.send(renderAdminDashboard(subscribers, published, draft));
+});
+
+app.post('/admin/vgb/:id/active', adminAuth, async (req, res) => {
+  try {
+    await setSubscriberActive(parseInt(req.params.id, 10), req.body.active === '1');
+    res.redirect('/admin');
+  } catch (err) {
+    logger.error('Toggle subscriber failed', { error: err.message });
+    res.status(400).send(`Error: ${err.message}`);
+  }
 });
 
 app.post('/admin/save', adminAuth, async (req, res) => {
@@ -312,7 +341,13 @@ app.post('/typeform-webhook', express.json({ limit: '2mb' }), (req, res) => {
   }
 });
 
+app.use((err, req, res, _next) => {
+  logger.error('Unhandled route error', { path: req.path, error: err.message });
+  res.status(500).send('Something went wrong.');
+});
+
 app.listen(config.port, () => {
+  resumeInterrupted();
   logger.info('Server started', { port: config.port });
   if (!config.whopWebhookSecret) logger.warn('WHOP_WEBHOOK_SECRET not set');
 });

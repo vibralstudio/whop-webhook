@@ -1,0 +1,71 @@
+<style>
+.vb-dock{position:fixed;right:18px;bottom:18px;z-index:45;display:flex;gap:8px;align-items:center}
+.vb-pill{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:12px 18px;font-weight:700;font-size:13.5px;border:1px solid var(--gold);background:var(--gold);color:#16130a;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.vb-sel{appearance:none;background:rgba(17,17,19,.92);color:var(--ink);border:1px solid var(--line-2);border-radius:999px;padding:11px 16px;font:600 13px var(--body);backdrop-filter:blur(8px);max-width:44vw}
+.vb-old{position:fixed;left:50%;transform:translateX(-50%);top:62px;z-index:44;background:var(--surface-2);border:1px solid var(--gold);color:var(--ink);border-radius:999px;padding:8px 16px;font-size:13px;white-space:nowrap}
+.vb-old a{color:var(--gold);margin-left:8px;font-weight:700}
+.vbm{position:fixed;inset:0;z-index:55;background:rgba(0,0,0,.74);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:16px}
+.vbm .box{position:relative;background:var(--surface);border:1px solid var(--line-2);border-radius:18px;width:100%;max-width:560px;max-height:92vh;overflow:auto;padding:30px 28px}
+.vbm h3{font-size:26px;margin:4px 0 8px}
+.vbm .eb{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:700}
+.vbm p{margin:0 0 18px;color:var(--text)}
+.vbm label{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:14px 0 6px}
+.vbm input,.vbm textarea{width:100%;background:#0d0d0f;border:1px solid var(--line-2);color:var(--ink);border-radius:10px;padding:12px 13px;font:15px var(--body)}
+.vbm textarea{min-height:110px;resize:vertical}
+.vbm input:focus,.vbm textarea:focus{outline:none;border-color:var(--gold)}
+.vbm .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.vbm .go{margin-top:20px;width:100%;justify-content:center;display:flex;border-radius:12px;padding:14px;font-weight:800;border:1px solid var(--gold);background:var(--gold);color:#16130a;font-size:15px}
+.vbm .go[disabled]{opacity:.5}
+.vbm .keep{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 6px}
+.vbm .keep div{border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px}
+.vbm .keep b{display:block;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:2px}
+.vbm .price{font-family:var(--display);font-weight:800;font-stretch:125%;font-size:40px;color:var(--ink);margin:8px 0 2px}
+.vbm .err{color:var(--bad);font-size:13.5px;margin-top:10px;min-height:1em}
+.vbm .x{position:absolute;top:14px;right:14px}
+@media(max-width:600px){.vb-dock{left:12px;right:12px;justify-content:flex-end}.vbm .two,.vbm .keep{grid-template-columns:1fr}.vb-old{top:auto;bottom:76px}}
+@media print{.vb-dock,.vb-old{display:none}}
+</style>
+<div class="vb-dock" id="vbDock"></div>
+<div class="vbm" id="vbM" hidden role="dialog" aria-modal="true" aria-labelledby="vbT"><div class="box"><button class="x" id="vbX" aria-label="Close">✕</button><div id="vbBody"></div></div></div>
+<script>
+(function(){
+var VB=__VB__;
+function $(s){return document.querySelector(s)}
+function e(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+var dock=$("#vbDock"),M=$("#vbM"),B=$("#vbBody");
+var h="";
+if(VB.versions.length>1){h+='<select class="vb-sel" id="vbSel" aria-label="Choose a release plan">'+VB.versions.slice().reverse().map(function(v){return '<option value="'+v.n+'"'+(v.n===VB.n?" selected":"")+'>'+(v.kind==="release"?"Release · ":"")+e(v.label||("v"+v.n))+'</option>'}).join("")+'</select>'}
+h+='<button class="vb-pill" id="vbNew" type="button">＋ Next release</button>';
+dock.innerHTML=h;
+if(VB.n!==VB.latest){var o=document.createElement("div");o.className="vb-old";o.innerHTML='You’re viewing an older plan.<a href="?">Go to latest →</a>';document.body.appendChild(o)}
+var sel=$("#vbSel");if(sel)sel.onchange=function(){location.href=sel.value==VB.latest?location.pathname:"?v="+sel.value};
+function open(){M.hidden=false;document.body.style.overflow="hidden";VB.credits>0?form():unlock()}
+function close(){M.hidden=true;document.body.style.overflow=""}
+$("#vbNew").onclick=open;$("#vbX").onclick=close;M.addEventListener("click",function(ev){if(ev.target===M)close()});
+document.addEventListener("keydown",function(ev){if(ev.key==="Escape"&&!M.hidden)close()});
+function keep(){var bp=window.BP||{};return '<div class="keep"><div><b>Stays locked</b>Your identity, fanbase, world, palette</div><div><b>Rebuilt for the new track</b>Diagnostic, 6 concepts, 90-day plan, 65 captions</div></div>'}
+function unlock(){
+  B.innerHTML='<div class="eb">New release plan</div><h3 id="vbT">New track. New game plan.</h3><p>Drop your next release and your Blueprint rebuilds itself around it, using what worked and what didn’t last time.</p>'+keep()+'<div class="price">$100</div><div style="color:var(--muted);font-size:13px">per release · ready in a few minutes</div>'+
+  (VB.checkout?'<a class="go" href="'+e(VB.checkout)+'" target="_blank" rel="noopener">Unlock my next release →</a><p style="margin:14px 0 0;font-size:13px;color:var(--muted)">Already paid? <a href="#" id="vbRe" style="color:var(--gold)">Check again</a>. It can take a minute.</p>':'<a class="go" href="mailto:contact@vibralstudio.com?subject=Next%20release%20plan">Request my next release plan →</a>');
+  var re=$("#vbRe");if(re)re.onclick=function(ev){ev.preventDefault();location.reload()};
+}
+function form(){
+  B.innerHTML='<div class="eb">New release plan · '+VB.credits+' credit'+(VB.credits>1?'s':'')+'</div><h3 id="vbT">What’s next?</h3><p>Tell us about the new track. Your plan rebuilds around it.</p>'+keep()+
+  '<div class="two"><div><label for="vbTi">Track title</label><input id="vbTi" autocomplete="off"></div><div><label for="vbDa">Release date</label><input id="vbDa" type="date"></div></div>'+
+  '<label for="vbFi">Upload the track · optional</label><input id="vbFi" type="file" accept="audio/*">'+
+  '<label for="vbNo">How did the last release go?</label><textarea id="vbNo" placeholder="What worked, what flopped, which concept got the most views, what you’re tired of posting…"></textarea>'+
+  '<button class="go" id="vbGo" type="button">Rebuild my plan →</button><div class="err" id="vbEr"></div>';
+  $("#vbGo").onclick=submit;
+}
+function submit(){
+  var t=$("#vbTi").value.trim(),d=$("#vbDa").value,n=$("#vbNo").value.trim(),f=$("#vbFi").files[0],er=$("#vbEr"),go=$("#vbGo");
+  if(!t||!d){er.textContent="Add the track title and the release date.";return}
+  go.disabled=true;er.textContent="";go.textContent=f?"Uploading the track…":"Starting…";
+  var up=f?(function(){return fetch("/api/c/"+VB.token+"/upload?field=release&name="+encodeURIComponent(f.name),{method:"POST",headers:{"Content-Type":f.type||"application/octet-stream"},body:f}).then(function(r){if(!r.ok)throw 0;return r.json()})})():Promise.resolve(null);
+  up.then(function(u){return fetch("/api/c/"+VB.token+"/release",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({title:t,date:d,notes:n,track:u&&u.url})})})
+  .then(function(r){return r.json().then(function(j){return{ok:r.ok,status:r.status,j:j}})})
+  .then(function(x){if(x.ok){location.href=location.pathname;return}if(x.status===402){VB.credits=0;unlock();return}go.disabled=false;go.textContent="Rebuild my plan →";er.textContent=x.j.error==="busy"?"Your plan is already being rebuilt.":"Something went wrong. Try again."},
+   function(){go.disabled=false;go.textContent="Rebuild my plan →";er.textContent="Upload failed. Check your connection and try again."});
+}
+})();
+</script>
