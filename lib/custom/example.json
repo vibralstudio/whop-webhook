@@ -1,0 +1,846 @@
+{
+ "artist": "Eliot Fallon",
+ "genreLine": "Melodic house · Progressive",
+ "badges": [
+  "Tomorrowland",
+  "LIV Las Vegas",
+  "Savior · Nov 25"
+ ],
+ "palette": [
+  "#c9a24b",
+  "#e8e2d4",
+  "#0d0d10"
+ ],
+ "symbol": "✶",
+ "mood": [
+  "golden",
+  "cosmic",
+  "nightride"
+ ],
+ "fanbase": {
+  "name": "The Delusionals",
+  "single": "a delusional",
+  "why": "You told us people think you're a bit delusional. That's not the risk — that's the brand. Every fan you have is chasing something other people call unrealistic. Give them a name that turns the insult into a badge.",
+  "alts": [
+   {
+    "n": "The Sunrisers",
+    "w": "Owns your morning moment. Softer, very ownable visually (golden hour)."
+   },
+   {
+    "n": "Highest",
+    "w": "From 'chasing your highest potential'. Short, chantable, works as merch."
+   }
+  ]
+ },
+ "positioning": "The artist who says the *dream* out loud — then *documents* every step of making it real.",
+ "diagnostic": {
+  "bottleneck": "You don't have a *content* problem. You have a *format* problem.",
+  "detail": "You have ideas, 10+ finished tracks, live footage, travel footage, Tomorrowland on your résumé and 5–10 hours a week. That's more raw material than 90% of artists. What you don't have is one repeatable format — so every post starts from zero, and starting from zero is what procrastination feeds on.",
+  "thesis": "Stop selling *freedom*. Sell the *delusion*.",
+  "thesisDetail": "Freedom, euphoria, 'living your life to the fullest' — every melodic artist sells that. It's invisible. What nobody else can say is: \"I played Tomorrowland, and I'm telling you right now I'm going to headline it.\" Say it publicly, track it daily, and let people watch. The thing you think people judge you for is the only thing that makes you different.",
+  "gauges": [
+   {
+    "k": "Proof",
+    "v": 9,
+    "n": "Tomorrowland, LIV, a 4M-view post. Most artists would kill for this."
+   },
+   {
+    "k": "Music pipeline",
+    "v": 9,
+    "n": "10+ finished unreleased tracks. You can test, not guess."
+   },
+   {
+    "k": "Identity",
+    "v": 5,
+    "n": "'Freedom' is true to you but generic on a feed."
+   },
+   {
+    "k": "Format",
+    "v": 2,
+    "n": "No repeatable series. Every post starts from zero."
+   },
+   {
+    "k": "Conversion",
+    "v": 3,
+    "n": "No pre-save or fan capture system mentioned."
+   }
+  ]
+ },
+ "disagreements": [
+  {
+   "you": "\"What's holding me back is the content — my team isn't big enough.\"",
+   "us": "A bigger team won't fix it. With 5–10h a week you can post 4 times a week — if the format is decided before you open the camera. Procrastination isn't a discipline problem here, it's a blank-page problem. One format removes the blank page."
+  },
+  {
+   "you": "\"My genre is melodic techno.\"",
+   "us": "Your references are John Summit, Kream and Kaskade — that's house and progressive festival energy, not melodic techno. Label yourself in the lane your references live in, or the algorithm sends you to an audience that doesn't want your drops."
+  },
+  {
+   "you": "\"The hook was phenomenal — that's why it hit 4M.\"",
+   "us": "The hook got the stop. You also said the song was insane and the video was short. That's three variables, and you only credited one. With 10+ unreleased tracks, you should be testing songs the way you test hooks — the next 4M might be a track sitting in your vault."
+  },
+  {
+   "you": "\"I want to model Martin Garrix because he's genuine.\"",
+   "us": "Genuine is table stakes. What's copyable about Garrix is that people could recognise him instantly — one signature sound and one look, repeated for years. Model the signature, not the personality."
+  }
+ ],
+ "insights": [
+  {
+   "t": "Persona beats playlist",
+   "d": "John Summit's rise was carried as much by his story — the accountant who quit to DJ — as by his tracks. People follow a character before they follow a catalogue. Your character is already written: the guy who said he'd headline Tomorrowland."
+  },
+  {
+   "t": "Named formats compound",
+   "d": "Kaskade turned a set style into a named, recurring thing (Redux) that fans return for. A name turns a post into a series, and a series into a habit."
+  }
+ ],
+ "bio": "Tomorrowland · LIV Las Vegas\nDelusional enough to headline Tomorrowland ✶\n'Savior' out Nov 25 ↓",
+ "want": "To be free — to build their own thing, travel, chase a dream nobody around them believes in.",
+ "fight": "The safe life. People who call them unrealistic. Waking up in a life they didn't choose.",
+ "visualRefs": [
+  {
+   "n": "Terrence Malick",
+   "w": "Golden-hour light, wind, bodies in open space — Days of Heaven, The Tree of Life."
+  },
+  {
+   "n": "Ryan McGinley",
+   "w": "Young, free, outdoors, sun-flared. Freedom shown, never told."
+  },
+  {
+   "n": "Interstellar (Nolan)",
+   "w": "Cosmic scale against a single human. Your 'cosmic' tile, done with restraint."
+  }
+ ],
+ "higgsfield": "Cinematic 9:16 vertical, golden hour over a calm ocean horizon. A lone man in a loose cream linen shirt stands ankle-deep at the shoreline, back to camera, arms slightly open. As the sun breaks the horizon, the sky above slowly opens into a gold and deep-navy cosmic nebula, and an eight-pointed star of light forms exactly where the sun meets the water. Slow dolly-in from behind, anamorphic lens flare, soft 35mm film grain, gentle wind in the shirt and hair. Warm gold (#c9a24b) and cream (#e8e2d4) highlights against near-black (#0d0d10) shadows. Euphoric, nostalgic, free. Clean frame, text-free, single continuous shot, 8 seconds.",
+ "doAI": [
+  "AI builds the world: skies, oceans, cosmic scale",
+  "Real you, real crowds, real stages",
+  "One AI visual per release, not per post"
+ ],
+ "dontAI": [
+  "AI versions of your face",
+  "Fake crowds or fake venues",
+  "Effects that hide the song"
+ ],
+ "concepts": [
+  {
+   "n": "The Delusion Log",
+   "tag": "Born from a contradiction",
+   "contra": "You fear being seen as delusional → we make it the series.",
+   "hook": "Day 1 of telling everyone I'm going to headline Tomorrowland.",
+   "beats": [
+    "0–2s: Day counter + the line on screen",
+    "2–6s: what you did today toward it (studio, gym, show, email)",
+    "6–12s: unreleased track plays under it",
+    "End: 'Day 2 tomorrow.'"
+   ],
+   "caption": "Day 1. Write it down so you can't take it back.",
+   "why": "Turns daily life into a story with a finish line. Followers come back to see the next day.",
+   "type": "dayinlife"
+  },
+  {
+   "n": "Sunrise Drop",
+   "tag": "Your moment",
+   "hook": "This drop was made for the exact second the sun comes up.",
+   "beats": [
+    "0–2s: dark horizon, track building",
+    "2–5s: sun breaks as the drop hits",
+    "5–10s: you on the beach / rooftop, eyes closed",
+    "End: date + track name"
+   ],
+   "caption": "Start the day like this or don't start it at all.",
+   "why": "Owns the morning, which no techno artist does. Instantly recognisable when repeated.",
+   "type": "sunrise"
+  },
+  {
+   "n": "Vault Roulette",
+   "tag": "Uses your 10+ tracks",
+   "hook": "I have 10 unreleased songs. You pick which one I finish.",
+   "beats": [
+    "0–2s: hook text over laptop + headphones",
+    "2–8s: snippet A / B / C, 2s each with letter on screen",
+    "8–10s: 'Comment A, B or C'"
+   ],
+   "caption": "Comment A, B or C. Most votes gets released.",
+   "why": "Comments are the strongest signal you can send the algorithm, and you get free A/B data on your music.",
+   "type": "laptop"
+  },
+  {
+   "n": "Walk-Out",
+   "tag": "Live footage",
+   "hook": "This is the 10 seconds before I walk on stage.",
+   "beats": [
+    "0–3s: backstage, crowd noise rising",
+    "3–6s: walking the corridor, POV",
+    "6–10s: hit the stage as the drop lands"
+   ],
+   "caption": "Every time feels like the first time.",
+   "why": "Proof without bragging. Uses footage you already have — NY Nov 9 is the next shoot.",
+   "type": "walkout"
+  },
+  {
+   "n": "Postcards",
+   "tag": "Travel",
+   "hook": "One city. One unreleased song.",
+   "beats": [
+    "0–1s: city name, huge",
+    "1–7s: 3 shots of the place, cut to the beat",
+    "7–8s: you, looking at camera"
+   ],
+   "caption": "[City]. Song from the vault. Where next?",
+   "why": "Your fans want to travel. Repeatable anywhere, costs nothing to make.",
+   "type": "travel"
+  },
+  {
+   "n": "Cosmic Savior",
+   "tag": "AI · release visual",
+   "hook": "I made the sky look like this song sounds.",
+   "beats": [
+    "0–2s: real you at the shoreline",
+    "2–8s: AI sky opens into the nebula (prompt below)",
+    "8–10s: 'Savior · Nov 25'"
+   ],
+   "caption": "Savior. November 25. ✶",
+   "why": "One big visual moment for the release. AI in the world, you stay real.",
+   "type": "surreal"
+  }
+ ],
+ "rules": [
+  {
+   "t": "The *hook* is the post",
+   "d": "If the first 2 seconds don't stop the thumb, nothing else exists."
+  },
+  {
+   "t": "One *format* beats ten ideas",
+   "d": "A series you repeat 30 times beats 30 good ideas posted once."
+  },
+  {
+   "t": "Post the *belief*, not the result",
+   "d": "People follow where you're going, not where you've been."
+  },
+  {
+   "t": "Test *songs* like hooks",
+   "d": "Your vault is a test lab. Let the data pick the next single."
+  },
+  {
+   "t": "*Re-roll* winners",
+   "d": "When a post works, post it again with a new hook. Don't retire it."
+  },
+  {
+   "t": "*Done* today beats perfect next week",
+   "d": "A 70% post today teaches you more than a 100% post that never ships."
+  }
+ ],
+ "trials": [
+  {
+   "t": "What it is",
+   "d": "Trial Reels go to non-followers first. Your followers don't see them unless they perform."
+  },
+  {
+   "t": "How you use it",
+   "d": "Same clip, 2 different hooks, both as Trials. Keep the winner."
+  },
+  {
+   "t": "Where it fits you",
+   "d": "Every Vault Roulette snippet and every Savior teaser goes through Trials first."
+  },
+  {
+   "t": "Why it changes everything",
+   "d": "You stop guessing. Bad tests never touch your grid, so you can test without fear."
+  }
+ ],
+ "splitTests": [
+  {
+   "v": "Hook text",
+   "t": "Belief line vs. question vs. bold claim",
+   "i": "High"
+  },
+  {
+   "v": "First frame",
+   "t": "Face vs. horizon vs. crowd",
+   "i": "High"
+  },
+  {
+   "v": "Song section",
+   "t": "Drop vs. vocal vs. build",
+   "i": "High"
+  },
+  {
+   "v": "Length",
+   "t": "7s vs. 12s",
+   "i": "Medium"
+  },
+  {
+   "v": "Caption CTA",
+   "t": "Comment A/B/C vs. save vs. none",
+   "i": "Medium"
+  }
+ ],
+ "release": {
+  "title": "Savior",
+  "date": "2026-11-25",
+  "presaveOpen": "2026-11-04",
+  "steps": [
+   "Pre-save link opens Nov 4 (21 days out)",
+   "Comment-to-DM: every Savior post says 'Comment SAVIOR for early access'",
+   "Release day: 1 Reel + 3 Stories + pinned post",
+   "Day +3: re-roll the best release post with a new hook",
+   "Day +7: fan reactions / duets reposted"
+  ]
+ },
+ "plan": [
+  {
+   "w": 1,
+   "d": "2026-10-12",
+   "ph": 0,
+   "t": "Lock the format",
+   "do": [
+    "Update bio + pin your 3 best posts",
+    "Delusion Log Day 1 (post 2 this week)",
+    "1 Sunrise Drop",
+    "1 Vault snippet as a Trial"
+   ],
+   "goal": "Delusion Log is live."
+  },
+  {
+   "w": 2,
+   "d": "2026-10-19",
+   "ph": 0,
+   "t": "Vault Roulette #1",
+   "do": [
+    "3 snippets, comment A / B / C",
+    "Delusion Log ×2",
+    "1 Walk-Out from existing footage"
+   ],
+   "goal": "Find the snippet with the best 3-second hold."
+  },
+  {
+   "w": 3,
+   "d": "2026-10-26",
+   "ph": 0,
+   "t": "Pick Savior's hook",
+   "do": [
+    "Same Savior clip, 3 hooks, all as Trials",
+    "Delusion Log ×2",
+    "1 Postcard"
+   ],
+   "goal": "Lock the winning hook for release."
+  },
+  {
+   "w": 4,
+   "d": "2026-11-02",
+   "ph": 0,
+   "t": "Pre-save opens",
+   "do": [
+    "Nov 4: pre-save link live + bio update",
+    "'Comment SAVIOR' post",
+    "Delusion Log ×2"
+   ],
+   "goal": "First pre-saves in."
+  },
+  {
+   "w": 5,
+   "d": "2026-11-09",
+   "ph": 1,
+   "t": "New York",
+   "do": [
+    "Nov 9: film the walk-out, the crowd, the drive",
+    "Delusion Log from NY",
+    "3 posts from one night over 7 days"
+   ],
+   "goal": "Best live footage of the year banked."
+  },
+  {
+   "w": 6,
+   "d": "2026-11-16",
+   "ph": 1,
+   "t": "Countdown",
+   "do": [
+    "Cosmic Savior AI visual",
+    "'9 days' Delusion Log",
+    "Walk-Out NY cut"
+   ],
+   "goal": "Savior is the only thing on your feed."
+  },
+  {
+   "w": 7,
+   "d": "2026-11-23",
+   "ph": 1,
+   "t": "Savior is out",
+   "do": [
+    "Nov 25: release Reel + 3 Stories + pin",
+    "2 versions as Trials",
+    "Reply to every comment for 2 hours"
+   ],
+   "goal": "Release day lands."
+  },
+  {
+   "w": 8,
+   "d": "2026-11-30",
+   "ph": 1,
+   "t": "Re-roll",
+   "do": [
+    "Best release post, new hook",
+    "Fan reactions",
+    "Delusion Log ×2"
+   ],
+   "goal": "Second wind for Savior."
+  },
+  {
+   "w": 9,
+   "d": "2026-12-07",
+   "ph": 2,
+   "t": "Name the fans",
+   "do": [
+    "Post: 'If you're still here, you're a Delusional.'",
+    "Pin it",
+    "Sunrise Drop"
+   ],
+   "goal": "Your fans have a name."
+  },
+  {
+   "w": 10,
+   "d": "2026-12-14",
+   "ph": 2,
+   "t": "Vault Roulette #2",
+   "do": [
+    "3 new snippets",
+    "Fans pick the next single",
+    "Delusion Log ×2"
+   ],
+   "goal": "Next single chosen by data."
+  },
+  {
+   "w": 11,
+   "d": "2026-12-21",
+   "ph": 2,
+   "t": "Year in delusion",
+   "do": [
+    "Recap: 'Day 70 of telling everyone…'",
+    "Best moments cut",
+    "1 Postcard"
+   ],
+   "goal": "A shareable recap of the run."
+  },
+  {
+   "w": 12,
+   "d": "2026-12-28",
+   "ph": 2,
+   "t": "Postcards",
+   "do": [
+    "New city, new vault song ×2",
+    "Delusion Log ×2"
+   ],
+   "goal": "Series #2 is a habit."
+  },
+  {
+   "w": 13,
+   "d": "2027-01-04",
+   "ph": 2,
+   "t": "Review & double down",
+   "do": [
+    "Top 3 posts of the 90 days: re-roll them",
+    "Announce single #2",
+    "Plan the next 90"
+   ],
+   "goal": "You know exactly what works."
+  }
+ ],
+ "phases": [
+  {
+   "n": "Lock the format",
+   "g": "One series, posted without thinking."
+  },
+  {
+   "n": "Savior",
+   "g": "A release that lands instead of disappearing."
+  },
+  {
+   "n": "Compound",
+   "g": "Fans with a name, music picked by data."
+  }
+ ],
+ "captions": {
+  "Delusion Log": [
+   "Day 1. Write it down so you can't take it back.",
+   "Day 12. Still saying it.",
+   "They laughed at day 1. Day 30.",
+   "Today I did one thing toward it. That's the whole secret.",
+   "Delusional is just early.",
+   "Somebody has to headline it. Why not me."
+  ],
+  "Sunrise": [
+   "Start the day like this or don't start it at all.",
+   "Made for 6:14am.",
+   "Sun's up. Volume up.",
+   "This one's for the people awake before everyone else.",
+   "Golden hour, golden ears.",
+   "New day. Same promise."
+  ],
+  "Vault": [
+   "Comment A, B or C. Most votes gets released.",
+   "This has been sitting on my laptop for a year. Should it come out?",
+   "You picked the last one. Pick this one too.",
+   "Unreleased. For now.",
+   "Be honest: release it or delete it?",
+   "If this gets 1,000 comments it's out next month."
+  ],
+  "Freedom": [
+   "You don't need permission.",
+   "Chose this life on purpose.",
+   "One city. One song. No plan.",
+   "Wherever you're listening from — hi.",
+   "The safe life was never the plan.",
+   "Pack light. Turn this up."
+  ],
+  "Short & Loud": [
+   "✶",
+   "Savior. 11.25.",
+   "Tell me this isn't it.",
+   "Turn it up.",
+   "No skip.",
+   "Again."
+  ]
+ },
+ "dayOne": [
+  "Change your bio (copy it above)",
+  "Pin your 3 best posts — the 4M one first",
+  "Film Delusion Log Day 1 — today, 10 minutes, phone is fine",
+  "Pick 3 vault tracks for Vault Roulette #1",
+  "Put Nov 4 (pre-save) and Nov 9 (NY) in your calendar"
+ ],
+ "promptBuilder": {
+  "groups": [
+   {
+    "id": "format",
+    "n": "Format",
+    "opts": [
+     [
+      "Reel",
+      "Cinematic 9:16 vertical video"
+     ],
+     [
+      "Spotify Canvas",
+      "Seamless 9:16 vertical loop for Spotify Canvas, first and last frame identical"
+     ],
+     [
+      "YouTube",
+      "Cinematic 16:9 widescreen video"
+     ],
+     [
+      "Cover art",
+      "Square 1:1 still image, album cover composition with space at the top for a title"
+     ]
+    ]
+   },
+   {
+    "id": "scene",
+    "n": "Scene",
+    "opts": [
+     [
+      "Ocean at dawn",
+      "a calm ocean shoreline at the exact moment of sunrise"
+     ],
+     [
+      "Rooftop",
+      "a city rooftop at golden hour, skyline soft in the haze"
+     ],
+     [
+      "Main stage",
+      "a festival main stage seen from behind the DJ booth, a sea of people beyond"
+     ],
+     [
+      "Desert",
+      "an open desert at sunrise, long shadows over rippled sand"
+     ],
+     [
+      "Night highway",
+      "an empty coastal highway at night, streetlights trailing into the distance"
+     ],
+     [
+      "Cosmic",
+      "a vast cosmic space, a slow-turning gold and navy nebula"
+     ],
+     [
+      "Studio 4am",
+      "a dark home studio at 4am, monitors glowing, city lights through the window"
+     ],
+     [
+      "Cliff",
+      "a cliff edge above the clouds, sun breaking through"
+     ]
+    ]
+   },
+   {
+    "id": "subject",
+    "n": "Subject",
+    "opts": [
+     [
+      "Lone figure",
+      "A lone man in a loose cream linen shirt stands with his back to camera, arms slightly open"
+     ],
+     [
+      "Crowd",
+      "Thousands of hands rise together in silhouette"
+     ],
+     [
+      "Hands on decks",
+      "Close-up of hands sliding a fader on a DJ mixer"
+     ],
+     [
+      "Landscape only",
+      "No people, the landscape is the subject"
+     ]
+    ]
+   },
+   {
+    "id": "symbol",
+    "n": "Your ✶",
+    "opts": [
+     [
+      "Where sun meets water",
+      "An eight-pointed star of light forms exactly where the light meets the horizon"
+     ],
+     [
+      "In the sky",
+      "Faint stars align into an eight-pointed star overhead"
+     ],
+     [
+      "Lens flare",
+      "The light flares into an eight-pointed star across the lens"
+     ],
+     [
+      "Off",
+      ""
+     ]
+    ]
+   },
+   {
+    "id": "camera",
+    "n": "Camera",
+    "opts": [
+     [
+      "Slow dolly-in",
+      "Slow dolly-in from behind"
+     ],
+     [
+      "Drone pull-back",
+      "Drone pulls back and rises to reveal the full scale"
+     ],
+     [
+      "Orbit",
+      "Slow 180-degree orbit around the subject"
+     ],
+     [
+      "Handheld POV",
+      "Handheld first-person POV, slight natural shake"
+     ],
+     [
+      "Locked wide",
+      "Locked-off wide shot, only the light moves"
+     ]
+    ]
+   },
+   {
+    "id": "light",
+    "n": "Light",
+    "opts": [
+     [
+      "Golden hour",
+      "warm golden-hour backlight with long soft shadows"
+     ],
+     [
+      "Blue hour",
+      "cool blue-hour light with a warm glow on the horizon"
+     ],
+     [
+      "Lasers + haze",
+      "thin laser beams cutting through thick haze"
+     ],
+     [
+      "Moonlight",
+      "silver moonlight with deep shadows"
+     ],
+     [
+      "Strobe",
+      "hard white strobes freezing motion on the beat"
+     ]
+    ]
+   },
+   {
+    "id": "texture",
+    "n": "Texture",
+    "opts": [
+     [
+      "35mm film",
+      "soft 35mm film grain, anamorphic lens flare"
+     ],
+     [
+      "Clean digital",
+      "crisp clean digital image, shallow depth of field"
+     ],
+     [
+      "VHS memory",
+      "faded VHS texture, slight color bleed, home-video nostalgia"
+     ]
+    ]
+   },
+   {
+    "id": "mood",
+    "n": "Mood",
+    "multi": 3,
+    "opts": [
+     [
+      "Euphoric",
+      "euphoric"
+     ],
+     [
+      "Nostalgic",
+      "nostalgic"
+     ],
+     [
+      "Free",
+      "free"
+     ],
+     [
+      "Dreamy",
+      "dreamy"
+     ],
+     [
+      "Dark",
+      "dark"
+     ],
+     [
+      "Epic",
+      "epic"
+     ],
+     [
+      "Intimate",
+      "intimate"
+     ]
+    ]
+   },
+   {
+    "id": "dur",
+    "n": "Length",
+    "opts": [
+     [
+      "5s",
+      "5 seconds"
+     ],
+     [
+      "8s",
+      "8 seconds"
+     ],
+     [
+      "10s",
+      "10 seconds"
+     ]
+    ]
+   }
+  ],
+  "defaults": {
+   "format": "Reel",
+   "scene": "Ocean at dawn",
+   "subject": "Lone figure",
+   "symbol": "Where sun meets water",
+   "camera": "Slow dolly-in",
+   "light": "Golden hour",
+   "texture": "35mm film",
+   "mood": [
+    "Euphoric",
+    "Nostalgic",
+    "Free"
+   ],
+   "dur": "8s"
+  },
+  "presets": [
+   {
+    "n": "Savior · release",
+    "v": {
+     "format": "Reel",
+     "scene": "Ocean at dawn",
+     "subject": "Lone figure",
+     "symbol": "Where sun meets water",
+     "camera": "Slow dolly-in",
+     "light": "Golden hour",
+     "texture": "35mm film",
+     "mood": [
+      "Euphoric",
+      "Nostalgic",
+      "Free"
+     ],
+     "dur": "8s"
+    }
+   },
+   {
+    "n": "Savior · Canvas",
+    "v": {
+     "format": "Spotify Canvas",
+     "scene": "Cosmic",
+     "subject": "Landscape only",
+     "symbol": "In the sky",
+     "camera": "Locked wide",
+     "light": "Golden hour",
+     "texture": "35mm film",
+     "mood": [
+      "Dreamy",
+      "Euphoric"
+     ],
+     "dur": "8s"
+    }
+   },
+   {
+    "n": "Sunrise Drop",
+    "v": {
+     "format": "Reel",
+     "scene": "Cliff",
+     "subject": "Lone figure",
+     "symbol": "Lens flare",
+     "camera": "Drone pull-back",
+     "light": "Golden hour",
+     "texture": "Clean digital",
+     "mood": [
+      "Epic",
+      "Free"
+     ],
+     "dur": "10s"
+    }
+   },
+   {
+    "n": "Walk-Out",
+    "v": {
+     "format": "Reel",
+     "scene": "Main stage",
+     "subject": "Crowd",
+     "symbol": "Off",
+     "camera": "Handheld POV",
+     "light": "Lasers + haze",
+     "texture": "Clean digital",
+     "mood": [
+      "Euphoric",
+      "Epic"
+     ],
+     "dur": "5s"
+    }
+   },
+   {
+    "n": "Cover art",
+    "v": {
+     "format": "Cover art",
+     "scene": "Ocean at dawn",
+     "subject": "Lone figure",
+     "symbol": "Where sun meets water",
+     "camera": "Locked wide",
+     "light": "Golden hour",
+     "texture": "35mm film",
+     "mood": [
+      "Nostalgic",
+      "Intimate"
+     ],
+     "dur": "5s"
+    }
+   }
+  ]
+ }
+}
