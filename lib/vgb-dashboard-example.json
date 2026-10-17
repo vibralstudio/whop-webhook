@@ -1,0 +1,155 @@
+{
+ "stats": [
+  {
+   "big": "100×",
+   "label": "One caption, same content",
+   "detail": "7 posts captioned \"Viral reel breakdown\" stayed under 20K. One named hook did 1.28M."
+  },
+  {
+   "big": "18×",
+   "label": "Same video, 8 days later",
+   "detail": "41,000 views on July 27. 595,549 on Aug 4. Identical file and caption."
+  },
+  {
+   "big": "280×",
+   "label": "Best post vs. last month",
+   "detail": "263,103 likes on a named case study. 167 to 543 on the same account in October."
+  }
+ ],
+ "posts": [
+  {
+   "name": "Named case study",
+   "note": "Breakdown of a real artist's shoot",
+   "views": 1469308,
+   "likes": 263103,
+   "comments": 8508
+  },
+  {
+   "name": "Year-end playbook",
+   "note": "December, still distributing",
+   "views": 1317617,
+   "likes": 84401,
+   "comments": 3242
+  },
+  {
+   "name": "One named hook",
+   "note": "“Comment ‘formula’” vs 7 unnamed",
+   "views": 1278310,
+   "likes": 58224,
+   "comments": 1488
+  },
+  {
+   "name": "“5 formats before 2026”",
+   "note": "Bold claim + deadline",
+   "views": 1082794,
+   "likes": 84588,
+   "comments": 7015
+  },
+  {
+   "name": "The re-upload",
+   "note": "Was 41K the first time",
+   "views": 595549,
+   "likes": 45176,
+   "comments": 1133
+  },
+  {
+   "name": "“Level up in 2026”",
+   "note": "Posted January 4",
+   "views": 578735,
+   "likes": 237691,
+   "comments": 5609
+  },
+  {
+   "name": "Named framework",
+   "note": "“Dopamine Addiction Loop”",
+   "views": 338056,
+   "likes": 52183,
+   "comments": 11121
+  },
+  {
+   "name": "Own course launch",
+   "note": "Framed as an event",
+   "views": 332426,
+   "likes": 164893,
+   "comments": 4249
+  }
+ ],
+ "notes": {
+  "views": "Reach and affinity are different axes. Switch to Like rate: the biggest-reach posts are not the ones people loved most.",
+  "lv": "A launch converted 50% of viewers into likes. The 1.28M-view post converted 4.6%. A high rate means people who came for you.",
+  "comments": "The most-commented post has a quarter of the top post's reach. A named mechanism makes people talk."
+ },
+ "reroll": {
+  "title": "Same file. Same caption.",
+  "before": 41000,
+  "after": 595549,
+  "beforeLabel": "July 27 · first upload",
+  "afterLabel": "Aug 4 · re-upload",
+  "note": "The video was never the problem. One roll was. Re-upload strong flops after 7 to 10 days, never the same day."
+ },
+ "todo": [
+  {
+   "t": "Re-upload one strong flop this week",
+   "s": "Same cut, same caption. Leave the original up."
+  },
+  {
+   "t": "Rewrite your last 10 opening lines",
+   "s": "Each one starts with a number, a name or a time window."
+  },
+  {
+   "t": "Block Jan 4–10 for your reset post",
+   "s": "11 weeks out. The biggest like count this week is dated Jan 4."
+  }
+ ],
+ "thesis": "The hook *is* the post.",
+ "lessons": [
+  {
+   "lesson": "Your first line decides everything.",
+   "proof": "Same video, new caption: 100× more views.",
+   "cta": "Rewrite your hook",
+   "to": "hooks"
+  },
+  {
+   "lesson": "A flop isn't dead. Post it again.",
+   "proof": "Same video re-posted 8 days later: 41K → 595K views.",
+   "cta": "Pick a flop to re-post",
+   "to": "tracker"
+  },
+  {
+   "lesson": "Talk about something real, with a name and a number.",
+   "proof": "A breakdown of a real artist's shoot: 263K likes. Generic posts on the same page: under 600.",
+   "cta": "Film a case study",
+   "to": "concepts:7"
+  },
+  {
+   "lesson": "Stay in your lane.",
+   "proof": "4 pages lost most of their reach in October after posting off-topic.",
+   "cta": "Lock your identity",
+   "to": "brand"
+  },
+  {
+   "lesson": "Videos get you found. Carousels make fans stick.",
+   "proof": "Every post over 100K views was a video.",
+   "cta": "See video concepts",
+   "to": "concepts"
+  },
+  {
+   "lesson": "Give people a way to reach you.",
+   "proof": "Good posts with no \"DM me\" or \"comment X\" collected almost no contacts.",
+   "cta": "Set up your presave DM",
+   "to": "release"
+  },
+  {
+   "lesson": "Sell the dream, not the lesson.",
+   "proof": "\"How to look famous on Instagram\": 254K views.",
+   "cta": "Use an aspiration hook",
+   "to": "hooks:asp"
+  },
+  {
+   "lesson": "Plan a big post for the first week of January.",
+   "proof": "The biggest post in the data went up January 4.",
+   "cta": "Set your release date",
+   "to": "release"
+  }
+ ]
+}
