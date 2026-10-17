@@ -11,9 +11,11 @@ const { generatePDF }            = require('./lib/generate-pdf');
 const { sendBlueprintEmail }     = require('./lib/send-blueprint-email');
 
 const { addSubscriber, getSubscriberByToken, getAllSubscribers, getActiveCount, deactivateSubscriber } = require('./lib/vgb-store');
-const { getPublished, getDraft, saveDraft, publishDraft, publishDirect }        = require('./lib/vgb-content-store');
+const { getPublished, getDraft, saveDraft, publishDraft, publishDirect, replaceDraftSections, replacePublishedSections } = require('./lib/vgb-content-store');
+const { withDashboard } = require('./lib/vgb-dashboard');
 const { sendVGBAccessEmail, sendApprovalEmail }                                 = require('./lib/vgb-email');
 const { renderVGBPage }                                                          = require('./lib/render-vgb');
+const { renderVGBApp }                                                           = require('./lib/render-vgb-app');
 const { renderAdminDashboard }                                                   = require('./lib/render-admin');
 const { customRouter, handleCustomPurchase, handleReleasePurchase, resumeInterrupted } = require('./lib/custom/routes');
 const { setSubscriberActive }                                                    = require('./lib/vgb-store');
@@ -169,13 +171,21 @@ app.get('/vgb/:token', async (req, res) => {
     `);
   }
   const published = await getPublished();
-  res.send(renderVGBPage(published, subscriber.email));
+  if (req.query.classic === '1') return res.send(renderVGBPage(published, subscriber.email));
+  res.set('Cache-Control', 'no-store');
+  res.send(renderVGBApp(published));
 });
 
 // ── Admin ─────────────────────────────────────────────────────────────────────
 app.get('/admin/preview', adminAuth, async (req, res) => {
   const published = await getPublished();
-  res.send(renderVGBPage(published, 'preview@vibralstudio.com'));
+  if (req.query.classic === '1') return res.send(renderVGBPage(published, 'preview@vibralstudio.com'));
+  res.send(renderVGBApp(published));
+});
+app.get('/admin/preview/draft', adminAuth, async (req, res) => {
+  const draft = await getDraft();
+  if (!draft) return res.status(404).send('No draft right now. <a href="/admin">Back</a>');
+  res.send(renderVGBApp(draft));
 });
 app.get('/admin', adminAuth, async (req, res) => {
   const subscribers = await getAllSubscribers();
@@ -200,6 +210,8 @@ app.post('/admin/save', adminAuth, async (req, res) => {
     const sections = JSON.parse(sectionsJson);
     await publishDirect(sections, weekLabel);
     logger.info('Admin published VGB update', { weekLabel, sections: sections.length });
+    const week = sections.find((x) => /this week/i.test(x.num || ''));
+    if (week && !week.dashboard) getPublished().then((p) => buildDashboardFor('published', p));
     res.redirect('/admin?success=1');
   } catch (err) {
     logger.error('Admin save failed', { error: err.message });
@@ -217,6 +229,33 @@ app.post('/admin/publish', adminAuth, async (req, res) => {
   }
 });
 
+const dashboardJobs = new Set();
+async function buildDashboardFor(kind, doc) {
+  if (!doc || dashboardJobs.has(kind)) return false;
+  dashboardJobs.add(kind);
+  try {
+    const { sections, built } = await withDashboard(doc.sections, doc.weekLabel);
+    if (!built) return false;
+    const ok = kind === 'draft'
+      ? await replaceDraftSections(doc.createdAt, sections)
+      : await replacePublishedSections(doc.lastUpdated, sections);
+    logger.info('VGB dashboard built', { kind, saved: ok });
+    return ok;
+  } catch (err) {
+    logger.error('VGB dashboard failed', { kind, error: err.message });
+    return false;
+  } finally {
+    dashboardJobs.delete(kind);
+  }
+}
+
+app.post('/admin/dashboard/:kind', adminAuth, async (req, res) => {
+  const kind = req.params.kind === 'draft' ? 'draft' : 'published';
+  const doc = kind === 'draft' ? await getDraft() : await getPublished();
+  buildDashboardFor(kind, doc);
+  res.redirect('/admin?building=' + kind);
+});
+
 app.post('/admin/draft', async (req, res) => {
   const auth = req.headers['authorization'];
   if (auth !== `Bearer ${ADMIN_PASSWORD}`) {
@@ -229,14 +268,18 @@ app.post('/admin/draft', async (req, res) => {
     }
     await saveDraft(sections, weekLabel);
     logger.info('Weekly draft received', { weekLabel, sections: sections.length });
+    res.status(200).json({ received: true, weekLabel });
+    // Build the app dashboard for this week, then send the approval email (with or without it).
+    const draft = await getDraft();
+    await buildDashboardFor('draft', draft);
     const approveUrl = `${BASE_URL}/admin`;
     await sendApprovalEmail(ADMIN_EMAIL, weekLabel || 'This week', approveUrl).catch(err =>
       logger.error('Approval email failed', { error: err.message })
     );
-    return res.status(200).json({ received: true, weekLabel });
+    return;
   } catch (err) {
     logger.error('Draft receive failed', { error: err.message });
-    return res.status(500).json({ error: err.message });
+    if (!res.headersSent) return res.status(500).json({ error: err.message });
   }
 });
 
