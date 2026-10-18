@@ -194,6 +194,19 @@ app.get('/admin', adminAuth, async (req, res) => {
   res.send(renderAdminDashboard(subscribers, published, draft));
 });
 
+app.post('/admin/vgb/:id/resend', adminAuth, async (req, res) => {
+  try {
+    const sub = (await getAllSubscribers()).find((x) => String(x.id) === String(req.params.id));
+    if (!sub) return res.status(404).send('Subscriber not found. <a href="/admin">Back</a>');
+    await sendVGBAccessEmail(sub.email, sub.token);
+    logger.info('VGB access email resent', { email: sub.email });
+    res.redirect('/admin?resent=1');
+  } catch (err) {
+    logger.error('Resend failed', { error: err.message });
+    res.status(500).send(`Error: ${err.message} — <a href="/admin">Back</a>`);
+  }
+});
+
 app.post('/admin/vgb/:id/active', adminAuth, async (req, res) => {
   try {
     await setSubscriberActive(parseInt(req.params.id, 10), req.body.active === '1');
