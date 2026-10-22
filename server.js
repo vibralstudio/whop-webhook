@@ -242,6 +242,37 @@ app.post('/admin/publish', adminAuth, async (req, res) => {
   }
 });
 
+// The Mac pipeline sends only a few updated sections (Rules, Hook & Caption Science) and no
+// "This Week" section. Merge them into the published content instead: keep every published
+// section, and rebuild "This Week" from the new weekly cards so the member app shows them.
+const isWeek = (x) => /this week/i.test(x.num || '') || /working right now/i.test(x.title || '');
+function mergeWeeklyDraft(incoming, published, weekLabel) {
+  const base = Array.isArray(published && published.sections) ? JSON.parse(JSON.stringify(published.sections)) : [];
+  const inc = Array.isArray(incoming) ? incoming : [];
+  let week = inc.find(isWeek);
+  if (!week) {
+    const patterns = inc.find((x) => /data-backed|hook & caption/i.test((x.num || '') + ' ' + (x.title || '')));
+    const rules = inc.find((x) => /mindset|rules of the game/i.test((x.num || '') + ' ' + (x.title || '')));
+    const cards = [...((patterns && patterns.cards) || []), ...((rules && rules.cards) || [])]
+      .filter((c) => c && c.title && c.body && !/^Body updated with data/i.test(c.body));
+    if (!cards.length) return base.length ? base : inc;
+    week = {
+      num: "09 — This Week's Data",
+      title: "WHAT'S WORKING RIGHT NOW",
+      lead: `Fresh data from this week's scrape of the top music and creator marketing accounts${weekLabel ? ' — ' + weekLabel.replace(/^Week of /i, '') : ''}.`,
+      cards,
+      insight: (patterns && patterns.insight) || (rules && rules.insight) || '',
+    };
+  }
+  const i = base.findIndex(isWeek);
+  if (i >= 0) base[i] = week;
+  else {
+    const j = base.findIndex((x) => /next level/i.test(x.num || ''));
+    if (j >= 0) base.splice(j, 0, week); else base.push(week);
+  }
+  return base;
+}
+
 const dashboardJobs = new Set();
 async function buildDashboardFor(kind, doc) {
   if (!doc || dashboardJobs.has(kind)) return false;
@@ -264,7 +295,11 @@ async function buildDashboardFor(kind, doc) {
 
 app.post('/admin/dashboard/:kind', adminAuth, async (req, res) => {
   const kind = req.params.kind === 'draft' ? 'draft' : 'published';
-  const doc = kind === 'draft' ? await getDraft() : await getPublished();
+  let doc = kind === 'draft' ? await getDraft() : await getPublished();
+  if (kind === 'draft' && doc && !(doc.sections || []).some(isWeek)) {
+    await saveDraft(mergeWeeklyDraft(doc.sections, await getPublished(), doc.weekLabel), doc.weekLabel);
+    doc = await getDraft();
+  }
   buildDashboardFor(kind, doc);
   res.redirect('/admin?building=' + kind);
 });
@@ -279,8 +314,9 @@ app.post('/admin/draft', async (req, res) => {
     if (!sections || !Array.isArray(sections)) {
       return res.status(400).json({ error: 'Invalid sections' });
     }
-    await saveDraft(sections, weekLabel);
-    logger.info('Weekly draft received', { weekLabel, sections: sections.length });
+    const merged = mergeWeeklyDraft(sections, await getPublished(), weekLabel);
+    await saveDraft(merged, weekLabel);
+    logger.info('Weekly draft received', { weekLabel, sections: sections.length, merged: merged.length });
     res.status(200).json({ received: true, weekLabel });
     // Build the app dashboard for this week, then send the approval email (with or without it).
     const draft = await getDraft();
