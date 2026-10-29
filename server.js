@@ -19,6 +19,7 @@ const { renderVGBApp }                                                          
 const { renderAdminDashboard }                                                   = require('./lib/render-admin');
 const { customRouter, handleCustomPurchase, handleReleasePurchase, resumeInterrupted } = require('./lib/custom/routes');
 const { setSubscriberActive }                                                    = require('./lib/vgb-store');
+const { startWeeklyScheduler, runWeekly, getWeeklyState, isWeeklyRunning }       = require('./lib/vgb-weekly');
 
 const fs   = require('fs');
 const path = require('path');
@@ -27,7 +28,9 @@ config.validateConfig();
 
 const app = express();
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'vibral2026';
+// No fallback: the repo is public, so the password must only live in Railway Variables.
+const ADMIN_PASSWORD = (process.env.ADMIN_PASSWORD || '').trim();
+if (!ADMIN_PASSWORD) logger.error('ADMIN_PASSWORD is not set — the admin is locked until it is added in Railway Variables');
 const ADMIN_EMAIL    = process.env.ADMIN_EMAIL    || 'contact@vibralstudio.com';
 const VGB_PRODUCT    = process.env.VGB_PRODUCT_NAME || 'The Viral Growth Blueprint';
 const BASE_URL       = process.env.BASE_URL || 'https://whop-webhook-production.up.railway.app';
@@ -42,6 +45,7 @@ app.use(express.urlencoded({ extended: true }));
 
 function adminAuth(req, res, next) {
   const auth = req.headers['authorization'];
+  if (!ADMIN_PASSWORD) return res.status(503).send('Admin locked: set ADMIN_PASSWORD in Railway Variables.');
   if (!auth || !auth.startsWith('Basic ')) {
     res.setHeader('WWW-Authenticate', 'Basic realm="VGB Admin"');
     return res.status(401).send('Authentication required.');
@@ -191,7 +195,14 @@ app.get('/admin', adminAuth, async (req, res) => {
   const subscribers = await getAllSubscribers();
   const published   = await getPublished();
   const draft       = await getDraft();
-  res.send(renderAdminDashboard(subscribers, published, draft));
+  const weekly      = await getWeeklyState().catch(() => null);
+  res.send(renderAdminDashboard(subscribers, published, draft, { ...(weekly || {}), running: isWeeklyRunning() }));
+});
+
+// Run the weekly scrape + update now (same job as the Monday schedule).
+app.post('/admin/weekly/run', adminAuth, (req, res) => {
+  if (!isWeeklyRunning()) runWeekly(weeklyDeps(), { reason: 'manual' });
+  res.redirect('/admin?weekly=started');
 });
 
 app.post('/admin/vgb/:id/resend', adminAuth, async (req, res) => {
@@ -273,6 +284,11 @@ function mergeWeeklyDraft(incoming, published, weekLabel) {
   return base;
 }
 
+const weeklyDeps = () => ({
+  getPublished, getDraft, saveDraft, publishDraft, buildDashboardFor, mergeWeeklyDraft, isWeek,
+  adminEmail: ADMIN_EMAIL, baseUrl: BASE_URL,
+});
+
 const dashboardJobs = new Set();
 async function buildDashboardFor(kind, doc) {
   if (!doc || dashboardJobs.has(kind)) return false;
@@ -306,7 +322,7 @@ app.post('/admin/dashboard/:kind', adminAuth, async (req, res) => {
 
 app.post('/admin/draft', async (req, res) => {
   const auth = req.headers['authorization'];
-  if (auth !== `Bearer ${ADMIN_PASSWORD}`) {
+  if (!ADMIN_PASSWORD || auth !== `Bearer ${ADMIN_PASSWORD}`) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
   try {
@@ -440,6 +456,7 @@ app.use((err, req, res, _next) => {
 
 app.listen(config.port, () => {
   resumeInterrupted();
+  startWeeklyScheduler(weeklyDeps());
   logger.info('Server started', { port: config.port });
   if (!config.whopWebhookSecret) logger.warn('WHOP_WEBHOOK_SECRET not set');
 });
