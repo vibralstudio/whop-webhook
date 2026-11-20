@@ -43,7 +43,7 @@ function open(){M.hidden=false;document.body.style.overflow="hidden";VB.credits>
 function close(){M.hidden=true;document.body.style.overflow=""}
 $("#vbNew").onclick=open;$("#vbX").onclick=close;M.addEventListener("click",function(ev){if(ev.target===M)close()});
 document.addEventListener("keydown",function(ev){if(ev.key==="Escape"&&!M.hidden)close()});
-function keep(){var bp=window.BP||{};return '<div class="keep"><div><b>Stays locked</b>Your identity, fanbase, world, palette</div><div><b>Rebuilt for the new track</b>Diagnostic, 6 concepts, 90-day plan, 65 captions</div></div>'}
+function keep(){var bp=window.BP||{};return '<div class="keep"><div><b>Stays locked</b>Your identity, fanbase, world, palette</div><div><b>Rebuilt for the new track</b>Diagnostic, 6 concepts, release plan, 65 captions</div></div>'}
 function unlock(){
   B.innerHTML='<div class="eb">New release plan</div><h3 id="vbT">New track. New game plan.</h3><p>Drop your next release and your Blueprint rebuilds itself around it, using what worked and what didn’t last time.</p>'+keep()+'<div class="price">$100</div><div style="color:var(--muted);font-size:13px">per release · ready in a few minutes</div>'+
   (VB.checkout?'<a class="go" href="'+e(VB.checkout)+'" target="_blank" rel="noopener">Unlock my next release →</a><p style="margin:14px 0 0;font-size:13px;color:var(--muted)">Already paid? <a href="#" id="vbRe" style="color:var(--gold)">Check again</a>. It can take a minute.</p>':'<a class="go" href="mailto:contact@vibralstudio.com?subject=Next%20release%20plan">Request my next release plan →</a>');

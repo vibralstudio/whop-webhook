@@ -90,6 +90,7 @@ section.s{padding:110px 0 30px}
 .gauge .bar i{display:block;height:100%;width:0;border-radius:6px;transition:width 1.4s cubic-bezier(.2,.7,.2,1)}
 .gauge .n{font-size:13px;color:var(--muted)}
 .bottleneck{font-family:var(--display);font-weight:800;font-stretch:125%;text-transform:uppercase;color:var(--ink);font-size:clamp(19px,2.1vw,25px);line-height:1.15;margin:8px 0 14px}
+.factors{display:grid;gap:10px;margin:4px 0 6px}.factors:empty{display:none}.factor{display:flex;gap:14px;align-items:flex-start;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}.factor .fn{font-family:var(--display);font-weight:800;font-stretch:125%;color:var(--gold);font-size:15px;line-height:1.4;min-width:26px}.factor b{display:block;color:var(--ink);font-size:15px;line-height:1.35}.factor .fd{display:block;font-size:13.5px;color:var(--muted);margin-top:3px}
 .thesis{margin-top:22px;padding:26px;border-radius:14px;background:linear-gradient(135deg,var(--gold-dim),transparent 70%);border:1px solid rgba(201,162,75,.3)}
 .thesis .big{font-family:var(--display);font-weight:800;font-stretch:125%;text-transform:uppercase;color:var(--ink);font-size:clamp(22px,2.7vw,32px);line-height:1.1;margin:8px 0 12px}
 
@@ -328,6 +329,7 @@ section.s{padding:110px 0 30px}
     <div class="sh reveal"><span class="num">00</span><h2>Diagnostic</h2></div>
     <div class="diag">
       <div class="reveal"><div class="lbl">The real bottleneck</div><div class="bottleneck" id="dBottle"></div><p id="dDetail"></p>
+        <div class="factors" id="dFactors"></div>
         <div class="thesis"><div class="lbl" style="color:var(--gold)">Our thesis</div><div class="big" id="dThesis"></div><p style="margin:0;color:var(--ink)" id="dThesisD"></p></div>
       </div>
       <div class="card reveal"><div class="copyrow"><span class="lbl">Where you stand</span><span class="lbl" style="opacity:.6">/ 10</span></div><div class="gauges" id="gauges"></div></div>
@@ -397,7 +399,7 @@ section.s{padding:110px 0 30px}
   </div></section>
 
   <section class="s" id="plan"><div class="wrap">
-    <div class="sh reveal"><span class="num">06</span><h2>Your 90 days</h2></div>
+    <div class="sh reveal"><span class="num">06</span><h2 id="planH">Your 90 days</h2></div>
     <div class="phases reveal" id="phases"></div>
     <div class="weeks reveal" id="weeks"></div>
     <div class="wdetail" id="wdetail"></div>
@@ -438,7 +440,9 @@ function $(s,r){return (r||document).querySelector(s)}
 function $$(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))}
 function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
 function kw(t){return esc(t).replace(/\*([^*]+)\*/g,'<span class="kw">$1</span>')}
-function store(k,v){try{if(v===undefined)return JSON.parse(localStorage.getItem("bp-"+k));localStorage.setItem("bp-"+k,JSON.stringify(v))}catch(e){return null}}
+// Saved per Blueprint link (/c/<token>), so checks on one artist's plan never show on another's in the same browser.
+var BPKEY="bp-"+location.pathname.replace(/\/+$/,"")+"-";
+function store(k,v){try{if(v===undefined)return JSON.parse(localStorage.getItem(BPKEY+k));localStorage.setItem(BPKEY+k,JSON.stringify(v))}catch(e){return null}}
 function toast(t){var el=$("#toast");el.textContent=t||"Copied";el.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(function(){el.classList.remove("on")},1400)}
 function copy(txt,msg){var done=function(){toast(msg)};try{navigator.clipboard.writeText(txt).then(done,function(){fallbackCopy(txt);done()})}catch(e){fallbackCopy(txt);done()}}
 function fallbackCopy(t){var a=document.createElement("textarea");a.value=t;a.style.position="fixed";a.style.opacity="0";document.body.appendChild(a);a.select();try{document.execCommand("copy")}catch(e){}a.remove()}
@@ -455,12 +459,14 @@ $("#iFb").innerHTML='Welcome to <b>'+esc(BP.fanbase.name)+'</b>.';
 $("#iBadges").innerHTML=BP.badges.map(function(b){return '<span>'+esc(b)+'</span>'}).join("");
 
 /* nav */
-var NAV=[["diagnostic","Diagnostic"],["truths","Disagreements"],["identity","Identity"],["world","World"],["concepts","Concepts"],["game","Rules"],["plan","90 days"],["captions","Captions"],["start","Start"]];
+var NAV=[["diagnostic","Diagnostic"],["truths","Disagreements"],["identity","Identity"],["world","World"],["concepts","Concepts"],["game","Rules"],["plan",(BP.planDays||90)+" days"],["captions","Captions"],["start","Start"]];
 $("#navLinks").innerHTML=NAV.map(function(n){return '<a href="#'+n[0]+'" data-nav="'+n[0]+'">'+n[1]+'</a>'}).join("");
 
 /* diagnostic */
 var D=BP.diagnostic;
 $("#dBottle").innerHTML=kw(D.bottleneck);$("#dDetail").textContent=D.detail;$("#dThesis").innerHTML=kw(D.thesis);$("#dThesisD").textContent=D.thesisDetail;
+if(D.factors&&D.factors.length)$("#dFactors").innerHTML='<div class="lbl">What else is holding you back</div>'+D.factors.map(function(f,i){return '<div class="factor"><span class="fn">0'+(i+2)+'</span><div><b>'+kw(f.t)+'</b>'+(f.d?'<span class="fd">'+esc(f.d)+'</span>':'')+'</div></div>'}).join("");
+$("#planH").textContent="Your "+(BP.planDays||90)+" days";
 $("#gauges").innerHTML=D.gauges.map(function(g){var c=g.v>=7?"var(--good)":g.v>=5?"var(--gold)":"var(--bad)";return '<div class="gauge"><div class="top"><span class="k">'+esc(g.k)+'</span><span class="v">'+g.v+'<small> /10</small></span></div><div class="bar"><i data-w="'+g.v*10+'" style="background:'+c+'"></i></div><div class="n">'+esc(g.n)+'</div></div>'}).join("");
 
 /* disagreements */
@@ -556,7 +562,7 @@ var REL=new Date(BP.release.date+"T12:00:00"),PRE=new Date(BP.release.presaveOpe
 function markFor(p){var s=new Date(p.d+"T12:00:00"),e=new Date(s.getTime()+6*864e5);var m=[];[[PRE,"PRE-SAVE"],[REL,BP.release.title.toUpperCase()]].forEach(function(x){if(x[0]>=s&&x[0]<=e)m.push(x[1])});if(p.t==="New York")m.push("NYC");return m.join(" · ")}
 var selW=curWeek();
 function renderPlan(){
-  $("#phases").innerHTML=BP.phases.map(function(ph,i){var ws=BP.plan.filter(function(p){return p.ph===i}),tot=0,dn=0;ws.forEach(function(p){p.do.forEach(function(_,k){tot++;if(DONE[p.w+"-"+k])dn++})});return '<div class="phase"><span class="lbl">Phase '+(i+1)+' · W'+ws[0].w+'–'+ws[ws.length-1].w+'</span><b>'+esc(ph.n)+'</b><span style="font-size:13px">'+esc(ph.g)+'</span><div class="pbar"><i style="width:'+(tot?Math.round(dn/tot*100):0)+'%"></i></div></div>'}).join("");
+  $("#phases").innerHTML=BP.phases.map(function(ph,i){var ws=BP.plan.filter(function(p){return p.ph===i}),tot=0,dn=0;if(!ws.length)return "";ws.forEach(function(p){p.do.forEach(function(_,k){tot++;if(DONE[p.w+"-"+k])dn++})});return '<div class="phase"><span class="lbl">Phase '+(i+1)+' · W'+ws[0].w+(ws.length>1?'–'+ws[ws.length-1].w:'')+'</span><b>'+esc(ph.n)+'</b><span style="font-size:13px">'+esc(ph.g)+'</span><div class="pbar"><i style="width:'+(tot?Math.round(dn/tot*100):0)+'%"></i></div></div>'}).join("");
   var cw=curWeek();
   $("#weeks").innerHTML=BP.plan.map(function(p,i){var mk=markFor(p);return '<button type="button" class="wk'+(i===cw?' now':'')+(mk?' mark':'')+'" '+(mk?'data-mark="'+esc(mk)+'"':'')+' aria-pressed="'+(i===selW)+'" data-w="'+i+'"><div class="wn">W'+p.w+'</div><div class="wd">'+fmt(p.d)+'</div><div class="dots">'+p.do.map(function(_,k){return '<i class="'+(DONE[p.w+"-"+k]?'d':'')+'"></i>'}).join("")+'</div></button>'}).join("");
   $$("[data-w]").forEach(function(b){b.onclick=function(){selW=+b.dataset.w;renderPlan()}});
@@ -567,7 +573,7 @@ function renderPlan(){
 renderPlan();
 setTimeout(function(){var b=$('[data-w="'+selW+'"]');if(b)b.parentNode.scrollLeft=Math.max(0,b.offsetLeft-20)},50);
 var daysTo=Math.ceil((REL-today())/864e5);
-$("#relcard").innerHTML='<div class="cd"><b>'+(daysTo>0?daysTo:"OUT")+'</b><span>'+(daysTo>0?"days to "+esc(BP.release.title):esc(BP.release.title)+" is out")+'</span></div><div><span class="lbl">Release system · '+esc(BP.release.title)+' · '+fmt(BP.release.date,{month:"long",day:"numeric"})+'</span><ol class="relsteps">'+BP.release.steps.map(function(s){return '<li>'+esc(s)+'</li>'}).join("")+'</ol></div>';
+$("#relcard").innerHTML='<div class="cd"><b>'+(daysTo>0?daysTo:"OUT")+'</b><span>'+(daysTo>0?(daysTo===1?"day until ":"days until ")+esc(BP.release.title):esc(BP.release.title)+" is out")+'</span></div><div><span class="lbl">Release system · '+esc(BP.release.title)+' · '+fmt(BP.release.date,{month:"long",day:"numeric"})+'</span><ol class="relsteps">'+BP.release.steps.map(function(s){return '<li>'+esc(s)+'</li>'}).join("")+'</ol></div>';
 
 /* captions */
 var CK=Object.keys(BP.captions),selC=CK[0],USED=store("used")||{};

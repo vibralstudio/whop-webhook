@@ -336,10 +336,14 @@ var STEPS=[
  {b:1,q:"Pick the 3 words that feel like your music.",parts:[{id:"emotion",t:"chips",multi:1,max:3,other:1,opts:["Euphoric","Melancholic","Dark","Hypnotic","Nostalgic","Cinematic","Sensual","Spiritual","Raw","Hopeful","Free","Lonely","Romantic","Defiant","Peaceful","Heavy"]}]},
  {b:1,q:"What moment in someone's life does your music belong to?",parts:[{id:"moment",t:"long",ph:"4am, driving home alone after…"}]},
  {b:1,q:"The line or moment in your music you're most proud of.",sub:"And why that one?",parts:[{id:"proud",t:"long",ph:"The drop in… because…"}]},
+ {b:1,q:"Where does your music come from?",sub:"This decides how we write your hooks.",parts:[
+   {id:"hookSource",t:"chips",opts:["My life — the songs are personal","The feeling — the track speaks for itself","Both"]},
+   {id:"trackFeel",t:"long",label:"What should someone feel in the first 10 seconds of your next track?",ph:"Like driving with the windows down at 3am…"}]},
  {b:1,q:"What's coming next?",parts:[
    {t:"fields",cols:2,fields:[{id:"relTitle",ph:"Next release title",label:"Next release"},{id:"relDate",ph:"",label:"Release date",type:"date"}]},
    {id:"relFile",t:"upload",max:1,accept:"audio/*",label:"Upload the track",cap:"MP3 or WAV · we listen before we write",opt:1},
-   {id:"unreleased",t:"chips",label:"Finished unreleased tracks in the vault",opts:["0","1–3","4–10","10+"]}]},
+   {id:"unreleased",t:"chips",label:"Finished unreleased tracks in the vault",opts:["0","1–3","4–10","10+"]},
+   {id:"planLen",t:"chips",label:"How long should your plan run?",opts:["30 days","45 days","60 days","90 days"]}]},
  /* ---- 3 FAN ---- */
  {b:2,q:"Describe your #1 fan as a human being.",sub:"Age, weekend, style, beliefs.",parts:[{id:"fan",t:"long",ph:"She's 24, spends her weekends…"}]},
  {b:2,q:"What does your fan want to become — and what are they fighting against?",parts:[{id:"become",t:"long",ph:"They want to… They're fighting…"}]},
@@ -618,7 +622,7 @@ function finish(){
   clearTimeout(syncT);
   api("/submit",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({answers:A,cur:cur})}).then(function(){building()},function(){$("#next").disabled=false;$("#err").textContent="Couldn't submit. Check your connection and try again."});
 }
-var STAGES=[["read","Reading your answers","Every word, every upload."],["core","Diagnosing","Your bottleneck, your thesis, where we disagree."],["world","Building your world","Identity, fanbase, palette, prompts."],["concepts","Writing your concepts","6 formats built around you."],["plan","Planning your 90 days","Week by week, around your release."],["captions","Writing your captions","65 lines in your voice."]];
+var STAGES=[["read","Reading your answers","Every word, every upload."],["core","Diagnosing","Your bottleneck, your thesis, where we disagree."],["world","Building your world","Identity, fanbase, palette, prompts."],["concepts","Writing your concepts","6 formats built around you."],["plan","Planning your release","Week by week, around your drop."],["captions","Writing your captions","65 lines in your voice."]];
 function drawStages(st){var i=STAGES.map(function(x){return x[0]}).indexOf(st.stage);if(st.status==="ready")i=STAGES.length;
   var done=st.done||[];
   $("#buildSteps").innerHTML=STAGES.map(function(x,k){var ok=done.indexOf(x[0])>-1||k<i&&!st.done;var cls=ok?"ok":(k===i||(st.active||[]).indexOf(x[0])>-1)?"now":"todo";return '<li class="'+cls+'"><div><b>'+x[1]+'</b><span>'+x[2]+'</span></div></li>'}).join("")}
